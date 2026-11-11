@@ -19,7 +19,7 @@ def rows(path):
         return list(csv.DictReader(f))
 
 # ---- brightfield vs fluorescence ----
-B = os.path.join(R, "brightfield_vs_fluorescence")
+B = os.path.join(R, "5_brightfield_vs_fluorescence")
 def folds(d):
     r = rows(os.path.join(B, d, "cv_summary.csv"))
     return [float(x["mean_test_roc_auc"]) for x in sorted([y for y in r if y["fold"].isdigit()], key=lambda x: int(x["fold"]))]
@@ -40,7 +40,7 @@ except ImportError:
     chk("paired t-test p-value (scipy missing)", None, 0.1864, 6e-5)
 
 # ---- explainability, 65 random targets (enrichment, group "all") ----
-X = os.path.join(R, "explainability", "random_65_targets")
+X = os.path.join(R, "4_explainability", "random_65_targets")
 E = {(r["method"], r["group"]): r for r in rows(os.path.join(X, "enrich_r65.csv"))}
 CLAIMS = {  # method: (mean, lo, hi) as stated in the README and documents
     "DINOv3 ViT-CX": (1.30, 1.07, 1.53),
@@ -72,15 +72,15 @@ else:
 # ---- benchmark table in README.md: every row recomputed from its per-fold CSV ----
 import re
 MAP = {
-    ("ResNet-50", 448): "resnet_r448/cv", ("ResNet-50", 224): "resnet_224_fov_comparison/r224_fov0415",
-    ("ResNet-18", 448): "resnet18/resnet18_r448", ("ResNet-18", 224): "resnet18/resnet18_r224",
-    ("EfficientNet-B3", 448): "efficientnet_b3/efficientnet_b3_r448", ("EfficientNet-B3", 224): "efficientnet_b3/efficientnet_b3_r224",
-    ("DINOv2-Large", 448): "dinov2_large_frozen_448", ("DINOv2-Large", 224): "dinov2_large_frozen_224",
-    ("DINOv3-Base", 448): "dinov3_frozen_448", ("DINOv3-Base", 224): "dinov3_frozen_224",
-    ("DINOv2-Base", 448): "dinov2_frozen_448", ("DINOv2-Base", 224): "dinov2_frozen_224",
-    ("DINOv2-Small", 224): "dinov2_small_frozen_224", ("DINOv2-Small + LoRA", 224): "lora_dinov2_224",
-    ("Cell-DINO", 448): "celldino_frozen_448", ("Cell-DINO", 224): "celldino_frozen_224",
-    ("CLIP ViT-L/14 (locked recipe)", 224): "clip_frozen_224", ("BiomedCLIP", 224): "biomedclip_frozen_224",
+    ("ResNet-50", 448): "1_end_to_end_models/resnet50_448", ("ResNet-50", 224): "1_end_to_end_models/resnet50_224",
+    ("ResNet-18", 448): "1_end_to_end_models/resnet18_448", ("ResNet-18", 224): "1_end_to_end_models/resnet18_224",
+    ("EfficientNet-B3", 448): "1_end_to_end_models/efficientnet_b3_448", ("EfficientNet-B3", 224): "1_end_to_end_models/efficientnet_b3_224",
+    ("DINOv2-Large", 448): "2_pretrained_vision_models/dinov2_large_448", ("DINOv2-Large", 224): "2_pretrained_vision_models/dinov2_large_224",
+    ("DINOv3-Base", 448): "2_pretrained_vision_models/dinov3_base_448", ("DINOv3-Base", 224): "2_pretrained_vision_models/dinov3_base_224",
+    ("DINOv2-Base", 448): "2_pretrained_vision_models/dinov2_base_448", ("DINOv2-Base", 224): "2_pretrained_vision_models/dinov2_base_224",
+    ("DINOv2-Small", 224): "3_lora_finetune/dinov2_small_frozen_224", ("DINOv2-Small + LoRA", 224): "3_lora_finetune/dinov2_small_lora_224",
+    ("Cell-DINO", 448): "2_pretrained_vision_models/celldino_448", ("Cell-DINO", 224): "2_pretrained_vision_models/celldino_224",
+    ("CLIP ViT-L/14 (locked recipe)", 224): "2_pretrained_vision_models/clip_vitl14_224", ("BiomedCLIP", 224): "2_pretrained_vision_models/biomedclip_224",
 }
 def fold_vals(rel):
     p = os.path.join(R, rel, "cv_summary.csv")

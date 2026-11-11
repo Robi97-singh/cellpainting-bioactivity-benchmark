@@ -97,7 +97,7 @@ selection now using compound-level validation (it stops earlier); the 448 runs t
 wrong lr rose by 0.010-0.020. Independent checks: per-assay AUC recomputed from the saved
 compound-level `test_preds.csv`/`test_labels.csv` (labels 0 = untested excluded) equals the reported
 values to ~1e-16 on three spot-checked runs, and no compound appears in more than one split.
-Per-model `results_showcase/<model>/README.md` narratives and
+Per-model `results_showcase/<group>/<model>/README.md` narratives and
 `results_showcase/benchmark_figures/README.md` are being rewritten from these numbers.
 
 ### Fix applied
@@ -127,18 +127,12 @@ Per-model `results_showcase/<model>/README.md` narratives and
   `make_adaptation_figure.py`, `make_pr_calibration_pareto.py`) from the
   corrected `per_assay_auc.csv` files -- see `results_showcase/benchmark_figures/`.
   (Wilcoxon was dropped from this pass; Friedman + Nemenyi remain.) All 11
-  affected `results_showcase/<model>/README.md` narratives were fully
+  affected `results_showcase/<group>/<model>/README.md` narratives were fully
   rewritten, not just number-swapped, since several statistical conclusions
   changed or reversed under correction (see each folder's README for specifics;
   the resolution-effect reversal and the Cell-DINO/ResNet50 significance
   collapse are the two largest).
-- **Parihar's `dinov3_r224`/`dinov3_r448`/`clip_r224` runs were re-run** with the patched
-  `train_head.py` against his cached embeddings (read-only; all new output kept under this
-  account's own directory tree, never written into his). Results are in `results_showcase/parihar_*`.
-  His DINOv3 r448 embeddings are identical copies of this account's own, so they are one
-  extraction, not two independent ones. His re-run used the `train_head.py` default lr 0.005
-  (not the locked 0.02), so those numbers are not comparable to the table above and are kept for
-  reference only.
+- The collaborator's `dinov3_r224`, `dinov3_r448` and `clip_r224` runs were re-run with the patched `train_head.py` against his cached embeddings. That re-run used the default lr 0.005 instead of the locked 0.02, so it is not comparable and is not included here; the results table uses this project's own re-runs at lr 0.02. His DINOv3 r448 embeddings are identical copies of this account's own, so they are one extraction, not two independent ones.
 - Additionally found and fixed during this pass: `train_head.py`'s
   **validation-time** scoring (used for early stopping / checkpoint
   selection) had the same per-image aggregation bug as the test-time scoring

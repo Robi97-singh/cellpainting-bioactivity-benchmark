@@ -6,12 +6,12 @@ Run `python3 verify/verify_claims.py` from the repository root. It needs only Py
 
 | Claim | Input file | Check |
 |---|---|---|
-| Brightfield ROC-AUC 0.6940 (SD 0.0287) | results_showcase/brightfield_vs_fluorescence/brightfield_resnet_r448/cv_summary.csv | mean and sample SD of the six fold values |
+| Brightfield ROC-AUC 0.6940 (SD 0.0287) | results_showcase/5_brightfield_vs_fluorescence/brightfield_resnet_r448/cv_summary.csv | mean and sample SD of the six fold values |
 | Fluorescence ROC-AUC 0.7097 (SD 0.0484) | .../fluorescence_resnet_r448_102plates/cv_summary.csv | same |
 | Difference -0.0157, p = 0.1864, brightfield better on 2 of 6 folds | both files above | paired t-test over the six folds, fold-by-fold sign count |
-| Enrichment of five frozen-model methods on 65 random targets, with 95% intervals | results_showcase/explainability/random_65_targets/enrich_r65.csv | values within rounding (0.005) |
+| Enrichment of five frozen-model methods on 65 random targets, with 95% intervals | results_showcase/4_explainability/random_65_targets/enrich_r65.csv | values within rounding (0.005) |
 | ResNet-50 Grad-CAM enrichment 1.07 (0.90 to 1.28), 58 of 65 targets | .../enrich_resnet_per_target.csv | mean of the non-empty rows, own bootstrap for the interval (tolerance 0.03 on the interval) |
-| Benchmark table in README.md (18 rows: ResNet-50, ResNet-18 and EfficientNet-B3 at 448 and 224 px, LoRA, frozen probes) | results_showcase/<model>/cv_summary.csv, one file per row | mean and sample SD of the six fold values, compared with the README row (tolerance 0.00006, i.e. rounding to four decimals); a row without a matching file is reported as MISSING |
+| Benchmark table in README.md (18 rows: ResNet-50, ResNet-18 and EfficientNet-B3 at 448 and 224 px, LoRA, frozen probes) | results_showcase/<group>/<model>/cv_summary.csv, one file per row | mean and sample SD of the six fold values, compared with the README row (tolerance 0.00006, i.e. rounding to four decimals); a row without a matching file is reported as MISSING |
 
 ## What it does not check
 

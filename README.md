@@ -182,8 +182,8 @@ Usage of each explainability script is in its docstring (`explainability/`); the
 |---|---|
 | Check the headline numbers against the committed result files | verify/ (run `python3 verify/verify_claims.py`; see VERIFY.md) |
 | Errors found and corrected in our own work | verify/CORRECTIONS.md |
-| Explainability heat maps, tables and regeneration notes | results_showcase/explainability/ |
-| Brightfield vs fluorescence results and paired tests | results_showcase/brightfield_vs_fluorescence/ |
+| Explainability heat maps, tables and regeneration notes | results_showcase/4_explainability/ |
+| Brightfield vs fluorescence results and paired tests | results_showcase/5_brightfield_vs_fluorescence/ |
 | Cluster job specs and parameter files behind each run | cluster/jobs/, params/ |
 
 ## Reference
