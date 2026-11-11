@@ -1,0 +1,28 @@
+cellpainting-bioactivity-benchmark
+Copyright 2026 Robin Singh and Bhartendu Parihar, University of Wuerzburg
+
+This repository is a derivative work. It extends the code released with:
+
+  Fredin Haslum, J., Lardeau, C.-H., Karlsson, J., Turkki, R., Leuchowius, K.-J.,
+  Smith, K. & Muellers, E.
+  Cell Painting-based bioactivity prediction boosts high-throughput screening
+  hit-rates and compound diversity.
+  Nature Communications 15, 3470 (2024). https://doi.org/10.1038/s41467-024-47171-1
+
+Original code: https://github.com/cfredinh/bioactive
+Original license: Apache License 2.0 (see LICENSE, unchanged).
+All credit for the original data pipeline, assay setup, training code and the
+published benchmark belongs to the original authors.
+
+Changes and additions made in this repository:
+  - Frozen foundation-model embeddings with trained heads (DINOv2, DINOv3,
+    CLIP, BiomedCLIP, Cell-DINO) evaluated on the six Butina folds.
+  - Statistical analysis of the cross-validation results (Friedman, Wilcoxon).
+  - Brightfield-only and fluorescence adaptation experiments.
+  - Explainability analysis: Grad-CAM, ViT-CX, occlusion, per-channel ablation,
+    centre-box control and a foreground/background masking test.
+  - Cluster job generators, verification script and result tables.
+  - Reorganisation of the files into the folder layout described in README.md.
+A file-by-file comparison with the original repository is in docs/UPSTREAM_COMPARISON.md.
+
+Third-party data (JUMP-CP, ChEMBL) is subject to its own terms.

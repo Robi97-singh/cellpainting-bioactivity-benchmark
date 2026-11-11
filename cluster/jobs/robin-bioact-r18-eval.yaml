@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: robin-bioact-r18-eval
+  namespace: <your-namespace>
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      runtimeClassName: nvidia
+      securityContext:
+        runAsUser: 1376
+        runAsGroup: 1376
+        fsGroup: 1376
+      containers:
+      - name: eval
+        image: abrainone/ai-linux:cu12.6.3-latest
+        workingDir: /shared/ssd/home/<your-namespace>/bioactive
+        command: ["bash", "-lc"]
+        args:
+        - >-
+          source /shared/ssd/home/<your-namespace>/venv/bin/activate &&
+          E=/shared/ssd/logs/<your-namespace>/r18_eval &&
+          python dump_predictions.py --model resnet18 --res 448 --params $E/params_r448.json --save_dir $E/out_r448 --batch_size 64 &&
+          python dump_predictions.py --model resnet18 --res 224 --params $E/params_r224.json --save_dir $E/out_r224 --batch_size 64
+        env:
+        - { name: WANDB_MODE,       value: "disabled" }
+        - { name: HF_HOME,          value: "/shared/ssd/home/<your-namespace>/.cache/huggingface" }
+        - { name: PYTHONUNBUFFERED, value: "1" }
+        - { name: PYTHONPATH, value: "." }
+        resources:
+          requests: { nvidia.com/gpu: 1, cpu: 8, memory: 32Gi }
+          limits:   { nvidia.com/gpu: 1, cpu: 16, memory: 40Gi }
+        volumeMounts:
+        - { mountPath: /shared/ssd/home/<your-namespace>, name: home }
+        - { mountPath: /shared/hdd/data/bioactive, name: data, readOnly: true }
+        - { mountPath: /shared/ssd/logs/<your-namespace>, name: logs }
+        - { mountPath: /shared/ssd/logs/<collaborator-namespace>, name: parihar, readOnly: true }
+        - { mountPath: /dev/shm, name: dshm }
+      volumes:
+      - name: home
+        hostPath: { path: /shared/ssd/home/<your-namespace>, type: Directory }
+      - name: data
+        hostPath: { path: /shared/hdd/data/bioactive, type: Directory }
+      - name: logs
+        hostPath: { path: /shared/ssd/logs/<your-namespace>, type: Directory }
+      - name: parihar
+        hostPath: { path: /shared/ssd/logs/<collaborator-namespace>, type: Directory }
+      - name: dshm
+        emptyDir: { medium: Memory, sizeLimit: 16Gi }

@@ -1,0 +1,44 @@
+
+IMAGE channels  (65 targets)
+mean correlation matrix
+       DNA   AGP    ER  Mito   RNA
+DNA   1.00  0.72  0.73  0.64  0.52
+AGP   0.72  1.00  0.98  0.96  0.85
+ER    0.73  0.98  1.00  0.97  0.85
+Mito  0.64  0.96  0.97  1.00  0.87
+RNA   0.52  0.85  0.85  0.87  1.00
+per pair over targets: min / median / max
+  DNA -AGP   0.18 / 0.73 / 0.81
+  DNA -ER    0.18 / 0.74 / 0.80
+  DNA -Mito  0.22 / 0.66 / 0.74
+  DNA -RNA   0.17 / 0.52 / 0.70
+  AGP -ER    0.33 / 0.99 / 0.99
+  AGP -Mito  0.30 / 0.98 / 0.99
+  AGP -RNA   0.16 / 0.88 / 0.97
+  ER  -Mito  0.42 / 0.98 / 0.99
+  ER  -RNA   0.14 / 0.87 / 0.97
+  Mito-RNA   0.18 / 0.89 / 0.97
+pairs among AGP/ER/Mito/RNA: mean 0.91, share of target-pairs above 0.9: 67%
+
+|gradient x input| maps  (65 targets)
+mean correlation matrix
+       DNA   AGP    ER  Mito   RNA
+DNA   1.00  0.60  0.42  0.59  0.45
+AGP   0.60  1.00  0.67  0.74  0.87
+ER    0.42  0.67  1.00  0.45  0.59
+Mito  0.59  0.74  0.45  1.00  0.68
+RNA   0.45  0.87  0.59  0.68  1.00
+per pair over targets: min / median / max
+  DNA -AGP   0.38 / 0.62 / 0.74
+  DNA -ER    0.28 / 0.43 / 0.55
+  DNA -Mito  0.36 / 0.61 / 0.95
+  DNA -RNA   0.24 / 0.45 / 0.72
+  AGP -ER    0.54 / 0.67 / 0.77
+  AGP -Mito  0.58 / 0.74 / 0.86
+  AGP -RNA   0.76 / 0.87 / 0.97
+  ER  -Mito  0.34 / 0.44 / 0.65
+  ER  -RNA   0.48 / 0.59 / 0.72
+  Mito-RNA   0.56 / 0.68 / 0.84
+pairs among AGP/ER/Mito/RNA: mean 0.67, share of target-pairs above 0.9: 4%
+
+skipped: 0

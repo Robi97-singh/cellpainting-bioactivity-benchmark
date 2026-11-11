@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: r65-fgbg-mask-resnet448
+  namespace: <your-namespace>
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      runtimeClassName: nvidia
+      securityContext:
+        runAsUser: 1059
+        runAsGroup: 1059
+        fsGroup: 1059
+        supplementalGroups: [1376]
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - { key: kubernetes.io/hostname, operator: NotIn, values: ["w4-mi"] }
+      containers:
+      - name: train
+        image: abrainone/ai-linux:cu12.6.3-latest
+        workingDir: /shared/ssd/home/<your-namespace>/bioactive
+        command: ["bash", "-lc"]
+        args:
+        - |
+          source /shared/ssd/home/<your-namespace>/venv/bin/activate
+          python explainability/run_fgbg_mask_r65.py --targets /shared/ssd/logs/<your-namespace>/results/cv/resnet50_r224/targets_random65.csv --out /shared/ssd/logs/<your-namespace>/xai_scratch_r65/fgbg_mask_resnet448 --params params/params_cluster_base.json --model resnet --res 448 --model_name bioact_resnet
+        env:
+        - { name: WANDB_MODE, value: "disabled" }
+        - { name: BIOACT_SAVE_DIR, value: "/shared/ssd/logs/<your-namespace>" }
+        - { name: HF_HOME, value: "/shared/ssd/home/<your-namespace>/hf_cache" }
+        - { name: PYTHONUNBUFFERED, value: "1" }
+        - { name: PYTHONPATH, value: "." }
+        resources:
+          requests: { nvidia.com/gpu: 1, cpu: 2, memory: 12Gi }
+          limits:   { nvidia.com/gpu: 1, cpu: 8, memory: 32Gi }
+        volumeMounts:
+        - { mountPath: /shared/ssd/home/<your-namespace>, name: home }
+        - { mountPath: /shared/hdd/data/bioactive, name: data, readOnly: true }
+        - { mountPath: /shared/ssd/logs/<your-namespace>, name: logs }
+        - { mountPath: /dev/shm, name: dshm }
+      volumes:
+      - name: home
+        hostPath: { path: /shared/ssd/home/<your-namespace>, type: Directory }
+      - name: data
+        hostPath: { path: /shared/hdd/data/bioactive, type: Directory }
+      - name: logs
+        hostPath: { path: /shared/ssd/logs/<your-namespace>, type: Directory }
+      - name: dshm
+        emptyDir: { medium: Memory, sizeLimit: 8Gi }

@@ -1,0 +1,5 @@
+condition,mean_auc,sd_over_folds,min_fold,max_fold,scoring
+"Fluorescence-trained, fluorescence images",0.7097,0.0484,0.662,0.789,training code
+"Brightfield-trained, brightfield images",0.694,0.0287,0.65,0.733,training code
+Fluorescence-trained on brightfield (fluor. norm),0.5403,0.0467,0.48,0.584,cv_rescore.py
+Fluorescence-trained on brightfield (bf norm),0.5242,0.0388,0.483,0.568,cv_rescore.py

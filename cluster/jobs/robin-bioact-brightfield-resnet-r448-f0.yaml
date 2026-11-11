@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: robin-bioact-brightfield-resnet-r448-f0
+  namespace: <your-namespace>
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      runtimeClassName: nvidia
+      securityContext:
+        runAsUser: 1376
+        runAsGroup: 1376
+        fsGroup: 1376
+      containers:
+      - name: train
+        image: abrainone/ai-linux:cu12.6.3-latest
+        workingDir: /shared/ssd/home/<your-namespace>/bioactive
+        command: ["bash", "-lc"]
+        args:
+        - >-
+          source /shared/ssd/home/<your-namespace>/venv/bin/activate &&
+          python classification.py --params_path params/params_brightfield_resnet_cluster.json
+          --model resnet --res 448 --fold 0
+          --batch_size 64 --model_name bioact_brightfield_resnet_r448 &&
+          python benchmark/make_plots_v3.py bioact_brightfield_resnet_r448_fold0
+        env:
+        - { name: WANDB_MODE,      value: "disabled" }
+        - { name: BIOACT_SAVE_DIR, value: "/shared/ssd/logs/<your-namespace>" }
+        - { name: HF_HOME,         value: "/shared/ssd/home/<your-namespace>/hf_cache" }
+        - { name: PYTHONUNBUFFERED, value: "1" }
+        - { name: PYTHONPATH, value: "." }
+        resources:
+          requests: { nvidia.com/gpu: 1, cpu: 8, memory: 32Gi }
+          limits:   { nvidia.com/gpu: 1, cpu: 16, memory: 40Gi }
+        volumeMounts:
+        - { mountPath: /shared/ssd/home/<your-namespace>, name: home }
+        - { mountPath: /shared/hdd/data/bioactive, name: data, readOnly: true }
+        - { mountPath: /shared/ssd/logs/<your-namespace>, name: logs }
+        - { mountPath: /dev/shm, name: dshm }
+      volumes:
+      - name: home
+        hostPath: { path: /shared/ssd/home/<your-namespace>, type: Directory }
+      - name: data
+        hostPath: { path: /shared/hdd/data/bioactive, type: Directory }
+      - name: logs
+        hostPath: { path: /shared/ssd/logs/<your-namespace>, type: Directory }
+      - name: dshm
+        emptyDir: { medium: Memory, sizeLimit: 16Gi }

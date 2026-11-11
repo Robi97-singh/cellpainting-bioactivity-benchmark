@@ -1,0 +1,7 @@
+reason,rule,fold,compound,assay,max_abs_score_change,file
+random_neg,smallest,2,JCP2022_028952,688546,0.346,random_neg_smallest_f2_JCP2022_028952_688546.png
+random_neg,median,0,JCP2022_064328,752434,1.028,random_neg_median_f0_JCP2022_064328_752434.png
+random_neg,largest,2,JCP2022_061898,752434,2.43,random_neg_largest_f2_JCP2022_061898_752434.png
+random_pos,smallest,2,JCP2022_068066,688812,0.13,random_pos_smallest_f2_JCP2022_068066_688812.png
+random_pos,median,2,JCP2022_020938,688128,0.703,random_pos_median_f2_JCP2022_020938_688128.png
+random_pos,largest,2,JCP2022_013942,845177,2.408,random_pos_largest_f2_JCP2022_013942_845177.png

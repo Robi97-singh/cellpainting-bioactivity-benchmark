@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it and the original paper."
+title: "cellpainting-bioactivity-benchmark"
+type: software
+license: Apache-2.0
+authors:
+  - family-names: Singh
+    given-names: Robin
+    affiliation: "University of Wuerzburg"
+  - family-names: Parihar
+    given-names: Bhartendu
+    affiliation: "University of Wuerzburg"
+repository-code: "https://github.com/Robi97-singh/cellpainting-bioactivity-benchmark"
+references:
+  - type: article
+    title: "Cell Painting-based bioactivity prediction boosts high-throughput screening hit-rates and compound diversity"
+    authors:
+      - {family-names: Fredin Haslum, given-names: Johan}
+      - {family-names: Lardeau, given-names: Charles-Hugues}
+      - {family-names: Karlsson, given-names: Johan}
+      - {family-names: Turkki, given-names: Riku}
+      - {family-names: Leuchowius, given-names: Karl-Johan}
+      - {family-names: Smith, given-names: Kevin}
+      - {family-names: Müllers, given-names: Erik}
+    journal: "Nature Communications"
+    volume: 15
+    year: 2024
+    doi: "10.1038/s41467-024-47171-1"
