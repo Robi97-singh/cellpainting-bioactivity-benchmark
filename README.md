@@ -208,6 +208,10 @@ Apache License 2.0, unchanged from the original repository (`LICENSE`). `NOTICE`
 
 This work was carried out as a practicum at the University of Würzburg under the supervision of Dr. Zongwie Wu. The original data pipeline, assay setup and training code are by the authors of the paper above.
 
+## Terminology
+
+**End-to-end** (written "fine-tuned" in some figure labels) means all weights of the network are trained on the cell images. This is different from a **frozen** backbone with a linear head, and from **LoRA**, where only small adapter layers are trained.
+
 ## Rerunning experiments
 
 See [docs/HOW_TO_RERUN.md](docs/HOW_TO_RERUN.md): one command per model, resolution and fold.
