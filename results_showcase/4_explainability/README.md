@@ -39,7 +39,7 @@ Image groups (normal, sparse, noise) were labelled by eye from the contact sheet
 | Request | Location |
 |---|---|
 | How the five channels become the three-colour picture under the heat map | xai_cnn/README.md and pilot_archive/resnet50_gradcam/README.md |
-| Per-channel analysis (effect of removing each stain) | xai_cnn/ablation_resnet448.csv, xai_cnn/channel_correlation.txt |
+| Per-channel analysis (effect of removing each stain) | xai_cnn/ablation_resnet448.csv, xai_cnn/ablation_resnet224.csv, xai_cnn/channel_correlation.txt |
 | Foreground and background evaluation | xai_cnn/fgbg_mask/ |
 | Gradient times activation on the 65 random targets | random_65_targets/enrich_r65.csv, xai_vit/, xai_cnn/gradxinput_resnet448.csv |
 | Brightfield copied into every channel | ../5_brightfield_vs_fluorescence/README.md (first-layer check) |

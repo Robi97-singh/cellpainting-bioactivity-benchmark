@@ -34,3 +34,6 @@ The brightfield image is copied into all five channels and fed to the fluorescen
 | Fluorescence-trained on brightfield (brightfield normalisation) | 0.524 |
 
 The two normalisation variants differ by less than the spread across folds. The two reference rows come from the training code's own scoring, the two control rows from `cv_rescore.py`; differences of a few hundredths between those groups are not meaningful, the gap to about 0.5 is.
+
+
+ablation_resnet224.csv: the same per-stain ablation for the 224 px ResNet-50 (same columns as ablation_resnet448.csv).
