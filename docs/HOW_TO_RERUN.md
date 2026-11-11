@@ -46,7 +46,7 @@ Folds are 0 to 5, or `all` for a sequential loop over the six folds in one job.
 
 ## Where results go
 
-- Fine-tuned runs write checkpoints and metrics to `src/models/`.
+- End To End runs write checkpoints and metrics to `src/models/`.
 - Frozen runs write embeddings to `<save_dir>/embeddings/` and the per-assay ROC-AUC to `<save_dir>/results/<fold>/plots/per_assay_auc.csv`, with `<save_dir>` = `/shared/ssd/logs/<user>/rerun/<model>_r<res>/`.
 
 Compare against the tables in `results/`. Runs are not bit-for-bit reproducible, so
