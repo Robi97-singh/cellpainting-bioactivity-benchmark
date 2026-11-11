@@ -40,3 +40,6 @@ paper_repo_reference/
 /data/
 /dinov2_repo/
 /celldino_weights/
+/data
+/dinov2_repo
+/celldino_weights

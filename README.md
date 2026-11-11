@@ -207,3 +207,7 @@ Apache License 2.0, unchanged from the original repository (`LICENSE`). `NOTICE`
 ## Acknowledgements
 
 This work was carried out as a practicum at the University of Würzburg under the supervision of Dr. Zongwie Wu. The original data pipeline, assay setup and training code are by the authors of the paper above.
+
+## Rerunning experiments
+
+See [docs/HOW_TO_RERUN.md](docs/HOW_TO_RERUN.md): one command per model, resolution and fold.
