@@ -82,7 +82,7 @@ embeddings, `Linear(D, 29)` head, masked focal-BCE loss, SGD momentum 0.9 + cosi
 train-only feature standardization, early stopping on compound-level validation ROC-AUC (patience 6).
 The learning rate was chosen in a fold-0 sweep on Cell-DINO (during the original per-image
 evaluation phase) and then fixed for all frozen backbones. ResNet-50 and LoRA were tuned
-individually, so the end-to-end-vs-frozen comparison includes a tuning advantage for the fine-tuned
+individually, so the end-to-end-vs-frozen comparison includes a tuning advantage for the end-to-end trained
 arms, and Cell-DINO may hold a small one among the frozen probes.
 
 **Re-run.** The results first reported after this fix (2026-10-03 batch) could not be reproduced

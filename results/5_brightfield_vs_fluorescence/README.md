@@ -18,7 +18,7 @@ These numbers use the 102-plate subset and are not comparable with the full-data
 
 Paired t-test on the six folds: difference -0.0157 (SD 0.0252), p = 0.1864, brightfield better on 2 of 6 folds. Not significant; fluorescence is ahead on four folds (2 to 5), so a small fluorescence advantage is not ruled out.
 
-The same comparison file also shows that fine-tuned brightfield ResNet-50 at 448 px beats frozen brightfield DINOv3 at 448 px (+0.0353, p = 0.017, better on 6 of 6 folds) and frozen brightfield Cell-DINO at 224 px (+0.1058, p = 0.0001, 6 of 6 folds).
+The same comparison file also shows that end-to-end trained brightfield ResNet-50 at 448 px beats frozen brightfield DINOv3 at 448 px (+0.0353, p = 0.017, better on 6 of 6 folds) and frozen brightfield Cell-DINO at 224 px (+0.1058, p = 0.0001, 6 of 6 folds).
 
 
 ## Controls requested after the supervisor meeting (November 2026)

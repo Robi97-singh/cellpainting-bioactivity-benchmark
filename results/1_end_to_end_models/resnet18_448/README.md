@@ -1,4 +1,4 @@
-# ResNet-18 (fine-tuned end to end), 6-fold CV
+# ResNet-18 (trained end to end), 6-fold CV
 
 Configuration, training and checkpoints: **Bhartendu Parihar** (collaborator). Scoring: re-computed here from his checkpoints with `cv_rescore.py` (compound level, same protocol as every other model in this folder).
 

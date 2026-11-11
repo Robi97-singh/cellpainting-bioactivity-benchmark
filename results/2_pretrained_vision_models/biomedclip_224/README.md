@@ -15,8 +15,8 @@ public JUMP-CP Cell Painting bioactivity benchmark (source_11, 29 assays, 6-fold
 
 | Reference | Test ROC-AUC (6-fold) |
 |---|---|
-| ResNet-50 fine-tuned, 448 | 0.6792 +/- 0.0245 |
-| ResNet-50 fine-tuned, 224 | 0.6638 +/- 0.0153 |
+| ResNet-50 end-to-end, 448 | 0.6792 +/- 0.0245 |
+| ResNet-50 end-to-end, 224 | 0.6638 +/- 0.0153 |
 | DINOv2-Small + LoRA, 224 | 0.6373 +/- 0.0203 |
 
 Frozen probes are statistically tied with each other apart from one pair (Cell-DINO over BiomedCLIP), and

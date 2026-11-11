@@ -120,3 +120,5 @@ python make_pr_calibration_pareto.py  # figs F, G, H (frozen points in the Paret
 python cv_friedman.py                 # 16-arm Friedman / Nemenyi
 # reads src/models/results/cv/{arm}/cv_per_assay.csv, writes to results/figures/
 ```
+
+_Note: figure labels that say "fine-tuned" mean trained end to end (all weights updated), as opposed to a frozen backbone or LoRA._
