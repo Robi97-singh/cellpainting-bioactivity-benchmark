@@ -11,7 +11,7 @@ DINOv3-Base, Cell-DINO, CLIP ViT-L/14, BiomedCLIP — anything trained via
 `extract_embeddings.py` + `train_head.py`) were computed on **raw per-image
 predictions, with no aggregation across a compound's multiple site images**.
 
-The fine-tuned CNN pipeline (`classification.py` → `defaults/trainer.py` →
+The end-to-end CNN pipeline (`classification.py` → `defaults/trainer.py` →
 `utils/metrics.py`'s `evaluate_predictions()`) has always aggregated
 predictions to compound level before scoring:
 
@@ -70,7 +70,7 @@ only the aggregate `per_assay_auc.csv`.)
 
 **Under the verified recipe the best frozen probe is DINOv2-Large r448 (0.6412), but the frozen
 probes span only 0.621-0.641, within the fold-to-fold standard deviation; the 0.6448 reported for
-DINOv3-Base r448 on 2026-10-03 reproduces to within 0.005 (0.6398).** Fine-tuned CNN results (ResNet-50, ResNet-18,
+DINOv3-Base r448 on 2026-10-03 reproduces to within 0.005 (0.6398).** End-to-end CNN results (ResNet-50, ResNet-18,
 EfficientNet-B3) and the LoRA parameter-efficient arm were unaffected — both
 go through `trainer.py`/`metrics.py` and already aggregated by compound
 correctly.
@@ -82,7 +82,7 @@ embeddings, `Linear(D, 29)` head, masked focal-BCE loss, SGD momentum 0.9 + cosi
 train-only feature standardization, early stopping on compound-level validation ROC-AUC (patience 6).
 The learning rate was chosen in a fold-0 sweep on Cell-DINO (during the original per-image
 evaluation phase) and then fixed for all frozen backbones. ResNet-50 and LoRA were tuned
-individually, so the fine-tuned-vs-frozen comparison includes a tuning advantage for the fine-tuned
+individually, so the end-to-end-vs-frozen comparison includes a tuning advantage for the fine-tuned
 arms, and Cell-DINO may hold a small one among the frozen probes.
 
 **Re-run.** The results first reported after this fix (2026-10-03 batch) could not be reproduced
@@ -151,7 +151,7 @@ Per-model `results/<group>/<model>/README.md` narratives and
 ## Experimental design (original single-fold comparison, superseded above)
 
 *The design below describes the project's original ResNet-50 vs. DINOv2-Base/CLIP/BiomedCLIP
-comparison: a single fixed fold, with the three ViTs fully fine-tuned end-to-end (AdamW). This
+comparison: a single fixed fold, with the three ViTs fully trained end-to-end (AdamW). This
 predates, and uses a different recipe and evaluation protocol from, the frozen-linear-probe
 6-fold CV benchmark reported in "Results" above (locked SGD recipe, `extract_embeddings.py` +
 `train_head.py`, compound-level aggregation). It is kept here as a record of the project's first
@@ -160,6 +160,6 @@ pass; the current main benchmark is the one above.*
 - **Single fixed fold** (folds 0–3 train / 4 val / 5 test) — identical across all models, so model-to-model comparison is internally valid. Comparison to the paper's 6-fold CV mean is indicative.
 - **Per-architecture hyperparameters** — ResNet-50: SGD, lr 1e-3, batch 64. All three ViTs: AdamW, lr 1e-4, batch 16 (matched). ReduceLROnPlateau scheduling for all.
 - **Resolution** — ResNet-50 and DINOv2 at 448; CLIP-family at native 224 (positional embeddings do not transfer to 448). Field of view held identical across all models.
-- **Single seed** — run-to-run variance ≈ ±0.02 ROC-AUC; only differences above this scale are interpreted. Model ordering between the 448 px fine-tuned CNNs (0.669 to 0.679) and the frozen probes (0.621 to 0.641) is robust to it; the ordering among the three fine-tuned CNNs (differences of 0.003 to 0.010 at 448 px) is not.
+- **Single seed** — run-to-run variance ≈ ±0.02 ROC-AUC; only differences above this scale are interpreted. Model ordering between the 448 px end-to-end CNNs (0.669 to 0.679) and the frozen probes (0.621 to 0.641) is robust to it; the ordering among the three end-to-end CNNs (differences of 0.003 to 0.010 at 448 px) is not.
 
 Full reasoning and limitations are in `docs/Project_Bioactive_Methodology.md`.

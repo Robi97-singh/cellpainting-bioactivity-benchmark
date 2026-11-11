@@ -15,7 +15,7 @@ The project predicts compound bioactivity from Cell Painting microscopy images, 
 
 Three regimes are compared on an identical split and evaluation protocol.
 
-- **Fine-tuned ResNet-50** at 224 and 448 px, trained and then tested separately for each fold with `classification.py`. This is the supervised baseline of the reference paper.
+- **End-to-end ResNet-50** at 224 and 448 px, trained and then tested separately for each fold with `classification.py`. This is the supervised baseline of the reference paper.
 - **Frozen backbones with a linear probe.** Each backbone is run once per split by `extract_embeddings.py` and the embeddings are cached. `train_head.py` then trains a linear head on the cached embeddings. Backbones: DINOv2 (Small, Base, Large), DINOv3-Base, Cell-DINO, CLIP ViT-L/14 and BiomedCLIP, at 224 px and, for the DINO family, 448 px. The head uses the standardized CLS embedding.
 - **LoRA adaptation** of DINOv2-Small at 224 px, with 2.4% of the parameters trainable.
 
@@ -27,7 +27,7 @@ Every result is the mean ROC-AUC over the 29 assays on the held-out test fold, a
 
 - **Aggregation:** several images per compound are combined into one prediction per compound before the AUC is computed.
 - **Significance:** models are compared with a Friedman test and Nemenyi post-hoc comparisons. Two comparisons are reported: a 9-arm test at 224 px (six frozen probes plus ResNet-50, ResNet-18 and EfficientNet-B3; the 29 assays are the blocks, each averaged over the six folds) and a more conservative 16-arm test over the six folds that adds the 448 px arms (Nemenyi critical difference 9.42 ranks).
-- **Correction of the frozen-backbone protocol:** the frozen-backbone evaluation was corrected on 3 October 2026, and the full benchmark was re-run at the locked recipe and verified on 6 October 2026. All numbers in this document come from the re-run and supersede the earlier ones. Before the correction, every frozen-backbone result was scored on raw per-image predictions, without averaging the site images of a compound, while the fine-tuned CNN pipeline had always aggregated to compound level. Because every assay label is a compound-level property, scoring each image as an independent case was pseudo-replication and left per-image noise in the AUC, so all frozen-backbone results were under-reported by about 0.04 to 0.05. The problem was found on 3 October 2026 while building the matched fluorescence baseline for the brightfield ablation and noticing that the two evaluation code paths diverged.
+- **Correction of the frozen-backbone protocol:** the frozen-backbone evaluation was corrected on 3 October 2026, and the full benchmark was re-run at the locked recipe and verified on 6 October 2026. All numbers in this document come from the re-run and supersede the earlier ones. Before the correction, every frozen-backbone result was scored on raw per-image predictions, without averaging the site images of a compound, while the end-to-end CNN pipeline had always aggregated to compound level. Because every assay label is a compound-level property, scoring each image as an independent case was pseudo-replication and left per-image noise in the AUC, so all frozen-backbone results were under-reported by about 0.04 to 0.05. The problem was found on 3 October 2026 while building the matched fluorescence baseline for the brightfield ablation and noticing that the two evaluation code paths diverged.
 
 Size of the correction for the frozen probes (mean test ROC-AUC, per-image scoring against compound-level scoring):
 
@@ -48,16 +48,16 @@ BiomedCLIP is omitted from this table; its corrected value (0.6214) is in the be
 
 ## Benchmark results
 
-Fine-tuned CNNs are the strongest arms: ResNet-50 at 448 px reaches a mean test ROC-AUC of 0.679, with ResNet-18 (0.676) and EfficientNet-B3 (0.669) at 448 px within one fold-to-fold SD of it, against 0.621 to 0.641 for the frozen probes. Mean test ROC-AUC over 29 assays, six-fold cross-validation, compound-level aggregation:
+End-to-end CNNs are the strongest arms: ResNet-50 at 448 px reaches a mean test ROC-AUC of 0.679, with ResNet-18 (0.676) and EfficientNet-B3 (0.669) at 448 px within one fold-to-fold SD of it, against 0.621 to 0.641 for the frozen probes. Mean test ROC-AUC over 29 assays, six-fold cross-validation, compound-level aggregation:
 
 | Regime | Model | Resolution (px) | Test ROC-AUC (mean ± SD) |
 | --- | --- | --- | --- |
-| Fine-tuned | ResNet-50 | 448 | 0.6792 ± 0.0245 |
-| Fine-tuned | ResNet-18 | 448 | 0.6759 ± 0.0218 |
-| Fine-tuned | EfficientNet-B3 | 448 | 0.6692 ± 0.0118 |
-| Fine-tuned | ResNet-50 | 224 | 0.6638 ± 0.0153 |
-| Fine-tuned | EfficientNet-B3 | 224 | 0.6622 ± 0.0254 |
-| Fine-tuned | ResNet-18 | 224 | 0.6611 ± 0.0145 |
+| End-to-end | ResNet-50 | 448 | 0.6792 ± 0.0245 |
+| End-to-end | ResNet-18 | 448 | 0.6759 ± 0.0218 |
+| End-to-end | EfficientNet-B3 | 448 | 0.6692 ± 0.0118 |
+| End-to-end | ResNet-50 | 224 | 0.6638 ± 0.0153 |
+| End-to-end | EfficientNet-B3 | 224 | 0.6622 ± 0.0254 |
+| End-to-end | ResNet-18 | 224 | 0.6611 ± 0.0145 |
 | Frozen probe | DINOv2-Large | 448 | 0.6412 ± 0.0170 |
 | Frozen probe | DINOv3-Base | 448 | 0.6398 ± 0.0192 |
 | LoRA (2.4% trainable) | DINOv2-Small | 224 | 0.6373 ± 0.0203 |
@@ -75,10 +75,10 @@ ResNet-18 and EfficientNet-B3 were configured and trained by Bhartendu Parihar; 
 
 The public benchmark of the reference paper reports 0.660 ± 0.094 and is a different number from every row above.
 
-- **Fine-tuned CNNs** are the strongest arms and are not separable from one another. Among the original arms ResNet-50 at 448 px ranks first in all six folds; with ResNet-18 and EfficientNet-B3 included the best of the 16 arms varies by fold (ResNet-50 ranks 4, 3, 2, 3, 1 and 1). In the 9-arm test at 224 px (Friedman chi-squared 67.2, p = 2e-11) all three are significantly better than DINOv2-Base (p <= 0.002), DINOv3-Base (p <= 0.001), CLIP ViT-L/14 (p <= 0.001) and BiomedCLIP (p < 0.001), marginally better than DINOv2-Large (p = 0.019 to 0.048), and not significantly different from Cell-DINO (p = 0.40 to 0.60) or from each other (p = 1.0). In the 16-arm fold test (chi-squared 71.8, p = 2e-9) the three 448 px CNNs rank 1 to 3 and separate from the weakest frozen probes (DINOv2 r224, DINOv3-Base r224, DINOv2-Small, CLIP, BiomedCLIP) but not from the best frozen 448 px probes.
+- **End-to-end CNNs** are the strongest arms and are not separable from one another. Among the original arms ResNet-50 at 448 px ranks first in all six folds; with ResNet-18 and EfficientNet-B3 included the best of the 16 arms varies by fold (ResNet-50 ranks 4, 3, 2, 3, 1 and 1). In the 9-arm test at 224 px (Friedman chi-squared 67.2, p = 2e-11) all three are significantly better than DINOv2-Base (p <= 0.002), DINOv3-Base (p <= 0.001), CLIP ViT-L/14 (p <= 0.001) and BiomedCLIP (p < 0.001), marginally better than DINOv2-Large (p = 0.019 to 0.048), and not significantly different from Cell-DINO (p = 0.40 to 0.60) or from each other (p = 1.0). In the 16-arm fold test (chi-squared 71.8, p = 2e-9) the three 448 px CNNs rank 1 to 3 and separate from the weakest frozen probes (DINOv2 r224, DINOv3-Base r224, DINOv2-Small, CLIP, BiomedCLIP) but not from the best frozen 448 px probes.
 - **Frozen probes** are statistically tied (no pair separates in the 9-arm test; the largest gap, Cell-DINO vs BiomedCLIP, is p = 0.15), so neither pretraining domain nor model scale gives a reliable advantage.
 - **The 16-arm test** over the six folds (chi-squared 71.8, p = 2e-9, critical difference 9.42 ranks) is more conservative. ResNet-18, ResNet-50 and EfficientNet-B3 at 448 px rank 1 to 3 (mean ranks 2.17, 2.33, 2.50) and each separates from DINOv2 at 224 px, DINOv3-Base at 224 px, DINOv2-Small, CLIP and BiomedCLIP; ResNet-18 at 448 px also separates from DINOv2-Large at 224 px, and ResNet-18 and EfficientNet-B3 at 224 px (rank 4.0 each) separate from BiomedCLIP. None of the CNNs separates from the best frozen 448 px probes or Cell-DINO.
-- **Resolution** has a small positive effect, 224 to 448 px: DINOv2-Base +0.010, DINOv2-Large +0.011, DINOv3-Base +0.012, Cell-DINO 0.000 and fine-tuned ResNet-50 +0.015, all within the fold-to-fold standard deviation of 0.01 to 0.02.
+- **Resolution** has a small positive effect, 224 to 448 px: DINOv2-Base +0.010, DINOv2-Large +0.011, DINOv3-Base +0.012, Cell-DINO 0.000 and end-to-end ResNet-50 +0.015, all within the fold-to-fold standard deviation of 0.01 to 0.02.
 - **LoRA** DINOv2-Small (0.6373) is 0.011 above its frozen backbone and level with the best frozen 448 px probes. It is not part of the significance tests.
 
 ## Brightfield vs fluorescence
@@ -87,7 +87,7 @@ Brightfield and fluorescence ResNet-50 models reach statistically indistinguisha
 
 - **Setup:** a one-channel brightfield ResNet-50 and a five-channel fluorescence ResNet-50 were trained at 448 px on the same 102 plates, one job per fold, over all six folds, with the same split and compound-level aggregation. Each fluorescence fold took roughly 27 to 41 hours.
 - **Difference:** brightfield minus fluorescence is -0.016 AUC (paired t-test p = 0.19; brightfield better on 2 of 6 folds; rough 95% range -0.042 to +0.011).
-- **Reading:** fluorescence is ahead on four of the six folds (folds 2 to 5, by 0.013 to 0.056) and brightfield on folds 0 and 1 (by 0.010 and 0.012), so a small fluorescence advantage is not ruled out. Against the frozen models on brightfield, the fine-tuned ResNet-50 at 448 px is ahead of frozen DINOv3 at 448 px by 0.0353 (p = 0.017, better on 6 of 6 folds) and of frozen Cell-DINO at 224 px by 0.1058 (p = 0.0001, 6 of 6 folds).
+- **Reading:** fluorescence is ahead on four of the six folds (folds 2 to 5, by 0.013 to 0.056) and brightfield on folds 0 and 1 (by 0.010 and 0.012), so a small fluorescence advantage is not ruled out. Against the frozen models on brightfield, the end-to-end ResNet-50 at 448 px is ahead of frozen DINOv3 at 448 px by 0.0353 (p = 0.017, better on 6 of 6 folds) and of frozen Cell-DINO at 224 px by 0.1058 (p = 0.0001, 6 of 6 folds).
 - **Comparability:** these numbers use the 102-plate subset and are not comparable with the full-dataset ResNet-50 rows in the benchmark table.
 
 ## Explainability of the frozen models
@@ -119,7 +119,7 @@ On 65 randomly sampled targets, occlusion is the only explanation method that cl
 
 ## Limitations and reproduction
 
-The benchmark ranking is robust at the level of "fine-tuned CNNs first, frozen probes tied", but several design choices limit what can be concluded.
+The benchmark ranking is robust at the level of "end-to-end CNNs first, frozen probes tied", but several design choices limit what can be concluded.
 
 - **Unequal tuning:** the frozen recipe (learning rate 0.02) was selected on fold 0 with Cell-DINO and applied unchanged to all frozen backbones, whereas ResNet-50 and LoRA use individually tuned recipes.
 - **Cell-DINO input:** its wrapper resizes images to 128 px internally, so its explanation maps are coarse.

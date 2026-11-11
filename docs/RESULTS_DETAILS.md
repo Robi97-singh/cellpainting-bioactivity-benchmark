@@ -10,11 +10,11 @@ paper's protocol). **Public JUMP-CP benchmark (Haslum et al. 2024): 0.660 ± 0.0
 kept here as the external reference point; it is a different number from any row in this table,
 all of which are this project's own reproduction/extension results. Resolution has a small positive effect on the DINO-family frozen probes (224 -> 448: DINOv2-Base
 +0.010, DINOv2-Large +0.011, DINOv3-Base +0.012, Cell-DINO 0.000; all within the 0.01-0.02
-fold-to-fold standard deviation) and a similar-sized one on fine-tuned ResNet-50 (+0.015). See
+fold-to-fold standard deviation) and a similar-sized one on end-to-end ResNet-50 (+0.015). See
 `results/benchmark_figures/README.md` for the full resolution comparison.
 
 **Key finding:** under compound-level aggregation, one locked linear-probe recipe for every frozen
-backbone, and 6-fold CV with Friedman + Nemenyi testing, fine-tuned CNNs are the strongest arms.
+backbone, and 6-fold CV with Friedman + Nemenyi testing, end-to-end CNNs are the strongest arms.
 ResNet-50 at 448 px has the highest mean (0.679) and ranks first in all 6 folds among the original
 arms (ResNet-50 and the frozen probes; mean 0.621-0.641 for the frozen probes). ResNet-18 (0.676) and
 EfficientNet-B3 (0.669) at 448 px, added later (see the paragraph on EfficientNet-B3 and ResNet-18

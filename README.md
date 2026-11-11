@@ -13,12 +13,12 @@ Mean test ROC-AUC over 29 assays, 6-fold cross-validation, compound-level aggreg
 
 | Regime | Model | Resolution | Test ROC-AUC (6-fold CV) |
 |---|---|---|---|
-| Fine-tuned | ResNet-50 | 448 | **0.6792 ± 0.0245** |
-| Fine-tuned | ResNet-18 | 448 | 0.6759 ± 0.0218 |
-| Fine-tuned | EfficientNet-B3 | 448 | 0.6692 ± 0.0118 |
-| Fine-tuned | ResNet-50 | 224 | 0.6638 ± 0.0153 |
-| Fine-tuned | EfficientNet-B3 | 224 | 0.6622 ± 0.0254 |
-| Fine-tuned | ResNet-18 | 224 | 0.6611 ± 0.0145 |
+| End-to-end | ResNet-50 | 448 | **0.6792 ± 0.0245** |
+| End-to-end | ResNet-18 | 448 | 0.6759 ± 0.0218 |
+| End-to-end | EfficientNet-B3 | 448 | 0.6692 ± 0.0118 |
+| End-to-end | ResNet-50 | 224 | 0.6638 ± 0.0153 |
+| End-to-end | EfficientNet-B3 | 224 | 0.6622 ± 0.0254 |
+| End-to-end | ResNet-18 | 224 | 0.6611 ± 0.0145 |
 | Frozen probe | DINOv2-Large | 448 | 0.6412 ± 0.0170 |
 | Frozen probe | DINOv3-Base | 448 | 0.6398 ± 0.0192 |
 | LoRA (2.4% trainable) | DINOv2-Small + LoRA | 224 | 0.6373 ± 0.0203 |
@@ -34,7 +34,7 @@ Mean test ROC-AUC over 29 assays, 6-fold cross-validation, compound-level aggreg
 
 The original paper reports 0.660 +/- 0.094 on the public JUMP-CP benchmark. It is an external reference, not a row of this table.
 
-- Fine-tuned CNNs are the strongest models. ResNet-50 at 448 px is best (0.679); the three CNNs at 448 px are not significantly different from one another.
+- End-to-end CNNs are the strongest models. ResNet-50 at 448 px is best (0.679); the three CNNs at 448 px are not significantly different from one another.
 - The frozen probes span 0.621 to 0.641 and no frozen pair separates: neither pretraining domain nor model size gives a reliable advantage.
 - Resolution (224 to 448 px) has a small positive effect (+0.010 to +0.015) within the fold-to-fold standard deviation.
 - LoRA on DINOv2-Small is +0.011 above its frozen backbone.
@@ -100,7 +100,7 @@ flowchart TD
     B3 -.optional 1-channel arm.-> T1
     B3 -.optional 1-channel arm.-> T2
 
-    subgraph REGIME_A["2a. Fine-tuned CNN (end-to-end)"]
+    subgraph REGIME_A["2a. End-to-end trained CNN"]
         T1["classification.py --model --res --fold<br/>(trains + checkpoints)"] --> T1T["classification.py ... --test<br/>(evaluates best checkpoint)"]
     end
 
@@ -134,7 +134,7 @@ python3 brightfield/02_download_and_process_brightfield.py --workers 16
 python3 brightfield/04_compute_brightfield_stats.py
 ```
 
-**2a. Fine-tuned CNN — train, then test, for each fold:**
+**2a. End-to-end CNN — train, then test, for each fold:**
 ```bash
 export WANDB_MODE=disabled HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export HF_HOME=~/.cache/huggingface

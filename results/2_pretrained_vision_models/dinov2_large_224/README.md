@@ -29,7 +29,7 @@ The effect is small relative to the 0.01-0.02 fold-to-fold standard deviation; s
 | DINOv2-Small + LoRA, 224 | 0.6373 +/- 0.0203 |
 
 Frozen probes are statistically tied with each other apart from one pair (Cell-DINO over BiomedCLIP), and
-fine-tuned ResNet-50 is consistently best; see `../benchmark_figures/README.md` for the Friedman/Nemenyi tests.
+end-to-end ResNet-50 is consistently best; see `../benchmark_figures/README.md` for the Friedman/Nemenyi tests.
 
 ## Method
 
