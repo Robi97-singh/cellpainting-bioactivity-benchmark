@@ -97,8 +97,8 @@ selection now using compound-level validation (it stops earlier); the 448 runs t
 wrong lr rose by 0.010-0.020. Independent checks: per-assay AUC recomputed from the saved
 compound-level `test_preds.csv`/`test_labels.csv` (labels 0 = untested excluded) equals the reported
 values to ~1e-16 on three spot-checked runs, and no compound appears in more than one split.
-Per-model `results_showcase/<group>/<model>/README.md` narratives and
-`results_showcase/benchmark_figures/README.md` were rewritten from these numbers.
+Per-model `results/<group>/<model>/README.md` narratives and
+`results/benchmark_figures/README.md` were rewritten from these numbers.
 
 ### Fix applied
 
@@ -125,9 +125,9 @@ Per-model `results_showcase/<group>/<model>/README.md` narratives and
   CV numbers (see above), replacing the old single-fixed-fold comparison.
 - **All benchmark figures/tables were regenerated** (`make_benchmark_figures.py`,
   `make_adaptation_figure.py`, `make_pr_calibration_pareto.py`) from the
-  corrected `per_assay_auc.csv` files -- see `results_showcase/benchmark_figures/`.
+  corrected `per_assay_auc.csv` files -- see `results/benchmark_figures/`.
   (Wilcoxon was dropped from this pass; Friedman + Nemenyi remain.) All 11
-  affected `results_showcase/<group>/<model>/README.md` narratives were fully
+  affected `results/<group>/<model>/README.md` narratives were fully
   rewritten, not just number-swapped, since several statistical conclusions
   changed or reversed under correction (see each folder's README for specifics;
   the resolution-effect reversal and the Cell-DINO/ResNet50 significance
@@ -144,7 +144,7 @@ Per-model `results_showcase/<group>/<model>/README.md` narratives and
   number changes, but future runs are now scored correctly end to end.
 - `clip_vitl14_adamw_224` (a different training recipe -- AdamW, full-image,
   not the locked SGD linear-probe recipe shared by every frozen arm) was
-  removed from `results_showcase/` as an invalid peer comparison, rather than
+  removed from `results/` as an invalid peer comparison, rather than
   corrected -- it was never comparing like with like.
 
 

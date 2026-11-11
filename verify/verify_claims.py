@@ -4,7 +4,7 @@ Run from anywhere:  python3 verify/verify_claims.py
 Prints PASS / FAIL / MISSING per claim; exit code 1 if any FAIL."""
 import csv, os, statistics as st, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-R = os.path.join(ROOT, "results_showcase")
+R = os.path.join(ROOT, "results")
 out = []
 
 def chk(name, got, want, tol):

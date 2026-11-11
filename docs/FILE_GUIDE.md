@@ -1,7 +1,7 @@
 # File guide
 
 
-Script locations: `classification.py`, `extract_embeddings.py`, `train_head.py` and `dump_predictions.py` are in the repository root; every other script is in `benchmark/`, `brightfield/`, `explainability/` or `cluster/` (see Repository layout).
+Script locations: `classification.py`, `extract_embeddings.py`, `train_head.py` and `dump_predictions.py` are in the repository root; every other script is in `analysis/`, `brightfield/`, `explainability/` or `cluster/` (see Repository layout).
 
 | File | Role | Regime |
 |---|---|---|

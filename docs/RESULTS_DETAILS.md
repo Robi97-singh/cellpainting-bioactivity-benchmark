@@ -11,7 +11,7 @@ kept here as the external reference point; it is a different number from any row
 all of which are this project's own reproduction/extension results. Resolution has a small positive effect on the DINO-family frozen probes (224 -> 448: DINOv2-Base
 +0.010, DINOv2-Large +0.011, DINOv3-Base +0.012, Cell-DINO 0.000; all within the 0.01-0.02
 fold-to-fold standard deviation) and a similar-sized one on fine-tuned ResNet-50 (+0.015). See
-`results_showcase/benchmark_figures/README.md` for the full resolution comparison.
+`results/benchmark_figures/README.md` for the full resolution comparison.
 
 **Key finding:** under compound-level aggregation, one locked linear-probe recipe for every frozen
 backbone, and 6-fold CV with Friedman + Nemenyi testing, fine-tuned CNNs are the strongest arms.
@@ -32,13 +32,13 @@ DINOv2 r224, DINOv3-Base r224, DINOv2-Small, CLIP and BiomedCLIP, but not from t
 probes or Cell-DINO. LoRA-adapted DINOv2-Small (0.6373) is +0.011 above its frozen backbone and level
 with the best frozen 448 probes; it is not part of the significance tests. Caveat: the frozen recipe
 (lr 0.02) was selected in a fold-0 sweep on Cell-DINO and applied unchanged to all frozen backbones,
-whereas ResNet-50 and LoRA use individually tuned recipes. See `results_showcase/benchmark_figures/README.md`
+whereas ResNet-50 and LoRA use individually tuned recipes. See `results/benchmark_figures/README.md`
 and `docs/Project_Bioactive_Methodology.md` (updated 2026-10-21 with the corrected
 benchmark, the brightfield vs fluorescence comparison and the explainability results).
 
 ## Contributions
 
-EfficientNet-B3 and ResNet-18: the configurations (`params/params_efficientnet_b3*.json`, `params/params_resnet18*.json` and the EfficientNet-B3 model registration in `defaults/models.py`) are by Bhartendu Parihar, who also trained both models at 448 px and at 224 px (resize 540 then crop 224, a field of view of 0.415). Their results in the table above are re-computed from his saved checkpoints at compound level with `cv_rescore.py` (jobs: `jobs/robin-bioact-effnet-eval.yaml`, `jobs/robin-bioact-r18-eval.yaml`) and are checked by `verify/verify_claims.py` like the other models. Details and caveats are in `results_showcase/efficientnet_b3/README.md` and `results_showcase/resnet18/README.md`: the results come from re-scoring his saved checkpoints.
+EfficientNet-B3 and ResNet-18: the configurations (`params/params_efficientnet_b3*.json`, `params/params_resnet18*.json` and the EfficientNet-B3 model registration in `defaults/models.py`) are by Bhartendu Parihar, who also trained both models at 448 px and at 224 px (resize 540 then crop 224, a field of view of 0.415). Their results in the table above are re-computed from his saved checkpoints at compound level with `cv_rescore.py` (jobs: `jobs/robin-bioact-effnet-eval.yaml`, `jobs/robin-bioact-r18-eval.yaml`) and are checked by `verify/verify_claims.py` like the other models. Details and caveats are in `results/efficientnet_b3/README.md` and `results/resnet18/README.md`: the results come from re-scoring his saved checkpoints.
 
 ## Brightfield vs fluorescence (ResNet-50, 448 px, same 102 plates)
 
@@ -49,7 +49,7 @@ To test whether the fluorescence channels carry information that brightfield lac
 | Fluorescence (5 channels) | 0.710 ± 0.048 |
 | Brightfield (1 channel) | 0.694 |
 
-Brightfield minus fluorescence is -0.016 AUC (paired t-test p = 0.19; brightfield better on 2 of 6 folds; rough 95% range -0.042 to +0.011). There is no significant difference, but fluorescence is ahead on four of six folds (folds 2 to 5, by 0.013 to 0.056), so a small fluorescence advantage is not ruled out. These numbers use the 102-plate subset and are not comparable with the full-dataset ResNet-50 row above. Aggregation: `python3 benchmark/aggregate_cv.py <model> 448 --outdir results/cv/<name>`; comparison: `compare_resnet.py`.
+Brightfield minus fluorescence is -0.016 AUC (paired t-test p = 0.19; brightfield better on 2 of 6 folds; rough 95% range -0.042 to +0.011). There is no significant difference, but fluorescence is ahead on four of six folds (folds 2 to 5, by 0.013 to 0.056), so a small fluorescence advantage is not ruled out. These numbers use the 102-plate subset and are not comparable with the full-dataset ResNet-50 row above. Aggregation: `python3 analysis/aggregate_cv.py <model> 448 --outdir results/cv/<name>`; comparison: `compare_resnet.py`.
 
 ## Explainability of the frozen models (2026-10)
 

@@ -30,7 +30,7 @@ spec:
           python classification.py --params_path params/params_fluor102_resnet_cluster.json
           --model resnet --res 448 --fold 0
           --batch_size 64 --model_name bioact_fluor102_resnet_r448 &&
-          python benchmark/make_plots_v3.py bioact_fluor102_resnet_r448_fold0
+          python analysis/make_plots_v3.py bioact_fluor102_resnet_r448_fold0
         env:
         - { name: WANDB_MODE,      value: "disabled" }
         - { name: BIOACT_SAVE_DIR, value: "/shared/ssd/logs/<your-namespace>" }

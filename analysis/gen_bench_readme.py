@@ -1,5 +1,5 @@
 import os, subprocess, pandas as pd
-D = "results_showcase/benchmark_figures"
+D = "results/benchmark_figures"
 P = pd.read_csv(f"{D}/nemenyi_pvalues.csv", index_col=0)
 P.index = [str(i).replace("\n", " ").replace("\\n", " ") for i in P.index]
 P.columns = [str(c).replace("\n", " ").replace("\\n", " ") for c in P.columns]
@@ -77,7 +77,7 @@ txt = R(
 "python cv_friedman.py                 # 16-arm Friedman / Nemenyi",
 "# reads src/models/results/cv/{arm}/cv_per_assay.csv, writes to results/figures/", "```", "")
 if os.environ.get("APPLY") == "1":
-    S = "results_showcase/_superseded_20261003/benchmark_figures"; os.makedirs(S, exist_ok=True)
+    S = "results/_superseded_20261003/benchmark_figures"; os.makedirs(S, exist_ok=True)
     subprocess.run(["git", "mv", f"{D}/README.md", f"{S}/README_pre_correction.md"], check=True)
     open(f"{D}/README.md", "w", encoding="utf-8").write(txt); print("written")
 else:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """plot_cv_extra.py -- cv_fold_spread.png and cv_per_assay.png for result folders written by cv_rescore.py (same style as aggregate_cv.py).
-Usage: python3 plot_cv_extra.py DIR TITLE [DIR TITLE ...]   e.g.  results_showcase/1_end_to_end_models/resnet18_448 "resnet18 @ 448" """
+Usage: python3 plot_cv_extra.py DIR TITLE [DIR TITLE ...]   e.g.  results/1_end_to_end_models/resnet18_448 "resnet18 @ 448" """
 import os, sys
 import numpy as np, pandas as pd
 import matplotlib

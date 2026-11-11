@@ -56,12 +56,12 @@ libraries by themselves; if an import ever fails, run `export PYTHONPATH=$PWD` f
 - `classification.py`, `extract_embeddings.py`, `train_head.py`, `dump_predictions.py` - entry points (repository root): train and test one model, cache frozen embeddings, train the linear head, dump predictions
 - `defaults/`, `utils/`, `params/`, `src/` - model definitions, trainer, datasets, losses and metrics, one JSON config per model, JUMP-CP metadata
 - `data_prep/` - data preparation (JUMP-CP + ChEMBL) and download notes
-- `benchmark/` - cross-validation aggregation, statistics (Friedman/Nemenyi, Wilcoxon), benchmark figures and tables
+- `analysis/` - cross-validation aggregation, statistics (Friedman/Nemenyi, Wilcoxon), benchmark figures and tables
 - `brightfield/` - brightfield versus fluorescence study: download and preparation, first-layer adaptation checks, cross-modality control
 - `explainability/` - ViT-CX, occlusion, Grad-CAM, per-stain ablation, gradient x input, foreground/background masking, summary figures
 - `cluster/` - job generators and example Kubernetes job files (paths are those of our cluster and must be adapted)
 - `data_lists/` - `targets_random65.csv`: the 65 random (compound, assay) targets used in all explainability experiments
-- `results_showcase/` - all result tables and selected figures, one folder per experiment (read by `verify/verify_claims.py`)
+- `results/` - all result tables and selected figures, one folder per experiment (read by `verify/verify_claims.py`)
 - `verify/` - `verify_claims.py` re-checks the numbers in this README against the committed result files
 - `docs/` - methodology and results document; `docs/UPSTREAM_COMPARISON.md` lists every difference from the original repository
 - `NOTICE`, `CITATION.cff`, `LICENSE` - credits, citation metadata and the Apache-2.0 licence
@@ -73,7 +73,7 @@ Paths: `params/*.json` use relative paths (`data/images`, `data/training_paper.c
 - Install the Python packages: `pip install -r requirements.txt`.
 - Data (not in the repository): five-channel Cell Painting images from JUMP-CP (source_11, about 2 TB), the ChEMBL 37 SQLite database, and the JUMP-CP metadata (`src/data/metadata/`, included). Put them under `data/` or set `BIOACTIVE_DATA_DIR`; see step 1 below.
 - Pretrained weights come from the Hugging Face cache (`HF_HOME`); Cell-DINO code and weights go to `dinov2_repo/` and `celldino_weights/`.
-- Trained checkpoints are not included (1.4 to 4.8 GB each); the result tables and figures of every run are in `results_showcase/`.
+- Trained checkpoints are not included (1.4 to 4.8 GB each); the result tables and figures of every run are in `results/`.
 - The step that builds the five-channel PNG images from the raw TIFFs was a one-off process and is not scripted here; the brightfield pipeline (`brightfield/`) is fully scripted and can serve as a template.
 
 ## How to reproduce
@@ -157,14 +157,14 @@ done
 
 **3. Aggregate the 6 folds into mean ± std:**
 ```bash
-python3 benchmark/aggregate_cv.py <model> <res>
-# e.g. python3 benchmark/aggregate_cv.py resnet 448
+python3 analysis/aggregate_cv.py <model> <res>
+# e.g. python3 analysis/aggregate_cv.py resnet 448
 ```
 
 **4. Generate figures / run inference-side visualization:**
 ```bash
-python3 benchmark/make_benchmark_figures.py          # cross-arm comparison figures + benchmark_summary.csv
-python3 benchmark/make_plots_v3.py bioact_resnet_r448_fold0   # per-run diagnostic plots
+python3 analysis/make_benchmark_figures.py          # cross-arm comparison figures + benchmark_summary.csv
+python3 analysis/make_plots_v3.py bioact_resnet_r448_fold0   # per-run diagnostic plots
 python3 explainability/run_gradcam_v2.py --targets <csv_of_targets> --out <output_dir> --model resnet --res 448
 ```
 
@@ -182,8 +182,8 @@ Usage of each explainability script is in its docstring (`explainability/`); the
 |---|---|
 | Check the headline numbers against the committed result files | verify/ (run `python3 verify/verify_claims.py`; see VERIFY.md) |
 | Errors found and corrected in our own work | verify/CORRECTIONS.md |
-| Explainability heat maps, tables and regeneration notes | results_showcase/4_explainability/ |
-| Brightfield vs fluorescence results and paired tests | results_showcase/5_brightfield_vs_fluorescence/ |
+| Explainability heat maps, tables and regeneration notes | results/4_explainability/ |
+| Brightfield vs fluorescence results and paired tests | results/5_brightfield_vs_fluorescence/ |
 | Cluster job specs and parameter files behind each run | cluster/jobs/, params/ |
 
 ## Reference

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate Kubernetes Job YAMLs for the 6-fold CV campaign.
 
-Each job: train (auto-tests, since is_supervised) -> benchmark/make_plots_v3.py
+Each job: train (auto-tests, since is_supervised) -> analysis/make_plots_v3.py
 
 Matrix:  224 -> resnet, dino, clip, biomedclip, lora_vit_s   (30 jobs)
          448 -> resnet, dino, lora_vit_s                     (18 jobs)
@@ -59,7 +59,7 @@ spec:
           python classification.py --params_path {base}
           --model {model} --res {res} --fold {fold}
           --batch_size {batch} --model_name {mname} &&
-          python benchmark/make_plots_v3.py {mname}_fold{fold}
+          python analysis/make_plots_v3.py {mname}_fold{fold}
         env:
         - {{ name: WANDB_MODE,      value: "disabled" }}
         - {{ name: BIOACT_SAVE_DIR, value: "{logs}" }}

@@ -24,7 +24,7 @@ spec:
           python classification.py --params_path params/params_lora_vit_small_cluster.json
           --model lora_vit_s --res 224 --fold 0
           --batch_size 32 --model_name bioact_lora_vit_s_r224 &&
-          python benchmark/make_plots_v3.py bioact_lora_vit_s_r224_fold0
+          python analysis/make_plots_v3.py bioact_lora_vit_s_r224_fold0
         env:
         - { name: WANDB_MODE,      value: "disabled" }
         - { name: BIOACT_SAVE_DIR, value: "/shared/ssd/logs/<your-namespace>" }
