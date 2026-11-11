@@ -98,7 +98,7 @@ wrong lr rose by 0.010-0.020. Independent checks: per-assay AUC recomputed from 
 compound-level `test_preds.csv`/`test_labels.csv` (labels 0 = untested excluded) equals the reported
 values to ~1e-16 on three spot-checked runs, and no compound appears in more than one split.
 Per-model `results_showcase/<group>/<model>/README.md` narratives and
-`results_showcase/benchmark_figures/README.md` are being rewritten from these numbers.
+`results_showcase/benchmark_figures/README.md` were rewritten from these numbers.
 
 ### Fix applied
 
