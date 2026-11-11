@@ -1,14 +1,15 @@
 # Cell Painting Bioactivity Prediction with Pretrained Vision Models
 
-**Benchmarking pretrained vision models for Cell Painting compound-bioactivity prediction.**
-
-A faithful replication and extension of Fredin Haslum et al., *Nature Communications* 15:3470 (2024). We reproduce the supervised ResNet-50 baseline and benchmark it against a broad set of pretrained vision backbones (frozen linear probe and parameter-efficient adaptation) spanning several pretraining paradigms, on an identical data split and evaluation protocol. The code builds on the original authors' repository (Apache-2.0); see `NOTICE` and the Reference section.
+Replication and extension of Fredin Haslum et al., *Nature Communications* 15:3470 (2024). The task is to predict
+compound bioactivity (29 assays) from Cell Painting images. We reproduce the supervised ResNet-50 baseline and compare it
+with ResNet-18, EfficientNet-B3 and pretrained vision backbones (DINOv2, DINOv3, Cell-DINO, CLIP, BiomedCLIP; frozen linear
+probe and LoRA), on the same six compound-level folds. Further studies: brightfield versus fluorescence input and
+explainability of the frozen models. The code builds on the original authors' repository (Apache-2.0); see `NOTICE`.
 
 ## Results
 
-**Full 6-fold CV benchmark, compound-level aggregation (re-run at the locked recipe and verified 2026-10-06; supersedes the 2026-10-03 numbers).** This replaces
-the single-fixed-fold comparison previously reported here -- see "Evaluation protocol fix" below
-for what changed, why, and how large the correction was.
+Mean test ROC-AUC over 29 assays, 6-fold cross-validation, compound-level aggregation (as in the original paper).
+
 
 | Regime | Model | Resolution | Test ROC-AUC (6-fold CV) |
 |---|---|---|---|
@@ -31,77 +32,21 @@ for what changed, why, and how large the correction was.
 | Frozen probe | CLIP ViT-L/14 (locked recipe) | 224 | 0.6257 ± 0.0160 |
 | Frozen probe | BiomedCLIP | 224 | 0.6214 ± 0.0127 |
 
-Mean ROC-AUC over 29 assays, 6-fold CV, compound-level aggregation (matching the reference
-paper's protocol). **Public JUMP-CP benchmark (Haslum et al. 2024): 0.660 ± 0.094 (6-fold CV)** --
-kept here as the external reference point; it is a different number from any row in this table,
-all of which are this project's own reproduction/extension results. Resolution has a small positive effect on the DINO-family frozen probes (224 -> 448: DINOv2-Base
-+0.010, DINOv2-Large +0.011, DINOv3-Base +0.012, Cell-DINO 0.000; all within the 0.01-0.02
-fold-to-fold standard deviation) and a similar-sized one on fine-tuned ResNet-50 (+0.015). See
-`results_showcase/benchmark_figures/README.md` for the full resolution comparison.
+The original paper reports 0.660 +/- 0.094 on the public JUMP-CP benchmark. It is an external reference, not a row of this table.
 
-**Key finding:** under compound-level aggregation, one locked linear-probe recipe for every frozen
-backbone, and 6-fold CV with Friedman + Nemenyi testing, fine-tuned CNNs are the strongest arms.
-ResNet-50 at 448 px has the highest mean (0.679) and ranks first in all 6 folds among the original
-arms (ResNet-50 and the frozen probes; mean 0.621-0.641 for the frozen probes). ResNet-18 (0.676) and
-EfficientNet-B3 (0.669) at 448 px, added later (see the paragraph on EfficientNet-B3 and ResNet-18
-below), are within one fold SD of ResNet-50; with them included the best of the 16 arms varies by fold
-and the three CNNs are not significantly different from one another. In the 9-arm 224 comparison (six
-frozen probes + ResNet-50, ResNet-18 and EfficientNet-B3 at 224 px; Friedman over the 29 assays, chi2
-= 67.2, p = 2e-11) all three CNNs are significantly better than DINOv2-Base (p <= 0.002), DINOv3-Base
-(p <= 0.001), CLIP ViT-L/14 (p <= 0.001) and BiomedCLIP (p < 0.001), marginally better than
-DINOv2-Large (p = 0.019-0.048), and not significantly different from Cell-DINO (p = 0.40-0.60). No
-frozen pair separates (largest gap: Cell-DINO vs BiomedCLIP, p = 0.15), so neither pretraining domain
-nor model scale gives a reliable advantage. A broader 16-arm test over the six folds
-(`cv_friedman.py`: frozen probes at both resolutions + the three CNNs; chi2 = 71.8, p = 2e-9) is more
-conservative (critical difference 9.4 ranks): the three 448 px CNNs (mean ranks 2.2-2.5) separate from
-DINOv2 r224, DINOv3-Base r224, DINOv2-Small, CLIP and BiomedCLIP, but not from the best frozen 448 px
-probes or Cell-DINO. LoRA-adapted DINOv2-Small (0.6373) is +0.011 above its frozen backbone and level
-with the best frozen 448 probes; it is not part of the significance tests. Caveat: the frozen recipe
-(lr 0.02) was selected in a fold-0 sweep on Cell-DINO and applied unchanged to all frozen backbones,
-whereas ResNet-50 and LoRA use individually tuned recipes. See `results_showcase/benchmark_figures/README.md`
-and `docs/Project_Bioactive_Methodology.md` (updated 2026-10-21 with the corrected
-benchmark, the brightfield vs fluorescence comparison and the explainability results).
+- Fine-tuned CNNs are the strongest models. ResNet-50 at 448 px is best (0.679); the three CNNs at 448 px are not significantly different from one another.
+- The frozen probes span 0.621 to 0.641 and no frozen pair separates: neither pretraining domain nor model size gives a reliable advantage.
+- Resolution (224 to 448 px) has a small positive effect (+0.010 to +0.015) within the fold-to-fold standard deviation.
+- LoRA on DINOv2-Small is +0.011 above its frozen backbone.
+- Brightfield versus fluorescence (ResNet-50, 448 px, 102 plates): no significant difference (-0.016 AUC, p = 0.19).
+- Explainability (65 random targets): occlusion is the only method that clearly beats image-independent control maps; ViT-CX is not clearly better than a centre blob.
+- Caveat: one frozen recipe (lr 0.02, chosen in a fold-0 sweep on Cell-DINO) is used for all frozen backbones, while ResNet-50 and LoRA are tuned individually.
 
-## Repository guide (for reviewers)
+Statistics, the brightfield study and the explainability results are in [docs/RESULTS_DETAILS.md](docs/RESULTS_DETAILS.md).
+Why the frozen-probe results are scored per compound, and the history of the re-runs: [docs/EVALUATION_NOTES.md](docs/EVALUATION_NOTES.md).
+Numbers in this README can be re-checked with `python3 verify/verify_claims.py`.
+EfficientNet-B3 and ResNet-18 were configured and trained by Bhartendu Parihar (details in the same document).
 
-| What | Where |
-|---|---|
-| Check the headline numbers against the committed result files | verify/ (run `python3 verify/verify_claims.py`; see VERIFY.md) |
-| Errors found and corrected in our own work | verify/CORRECTIONS.md |
-| Explainability heat maps, tables and regeneration notes | results_showcase/explainability/ |
-| Brightfield vs fluorescence results and paired tests | results_showcase/brightfield_vs_fluorescence/ |
-| Cluster job specs and parameter files behind each run | cluster/jobs/, params/ |
-
-EfficientNet-B3 and ResNet-18: the configurations (`params/params_efficientnet_b3*.json`, `params/params_resnet18*.json` and the EfficientNet-B3 model registration in `defaults/models.py`) are by Bhartendu Parihar, who also trained both models at 448 px and at 224 px (resize 540 then crop 224, a field of view of 0.415). Their results in the table above are re-computed from his saved checkpoints at compound level with `cv_rescore.py` (jobs: `jobs/robin-bioact-effnet-eval.yaml`, `jobs/robin-bioact-r18-eval.yaml`) and are checked by `verify/verify_claims.py` like the other models. Details and caveats are in `results_showcase/efficientnet_b3/README.md` and `results_showcase/resnet18/README.md`: the results come from re-scoring his saved checkpoints.
-
-## Brightfield vs fluorescence (ResNet-50, 448 px, same 102 plates)
-
-To test whether the fluorescence channels carry information that brightfield lacks, a brightfield ResNet-50 and a five-channel fluorescence ResNet-50 were trained at 448 px on the same 102 plates, one job per fold, over all six folds (same split and compound-level aggregation as above).
-
-| Input | Mean test ROC-AUC (6-fold CV) |
-|---|---|
-| Fluorescence (5 channels) | 0.710 ± 0.048 |
-| Brightfield (1 channel) | 0.694 |
-
-Brightfield minus fluorescence is -0.016 AUC (paired t-test p = 0.19; brightfield better on 2 of 6 folds; rough 95% range -0.042 to +0.011). There is no significant difference, but fluorescence is ahead on four of six folds (folds 2 to 5, by 0.013 to 0.056), so a small fluorescence advantage is not ruled out. These numbers use the 102-plate subset and are not comparable with the full-dataset ResNet-50 row above. Aggregation: `python3 benchmark/aggregate_cv.py <model> 448 --outdir results/cv/<name>`; comparison: `compare_resnet.py`.
-
-## Explainability of the frozen models (2026-10)
-
-Explanations were produced for the frozen DINOv3-Base (448 px) and Cell-DINO (224 px) linear heads (standardized CLS embedding + linear head, same heads as the benchmark) and compared with ResNet-50 Grad-CAM as the reference. Methods: ViT-CX (primary, Xie et al. 2023), occlusion, ViT Grad-CAM and gradient-times-activation. The explained score is the assay logit. Faithfulness is deletion and insertion AUC, each standardized (z) against 10 smooth random maps and judged against two image-independent control maps (centre blob and border). Cell focus is the enrichment of the map on the brightest 3% of pixels (1.0 = chance). Intervals are 95% bootstrap intervals over targets.
-
-Main results on 65 randomly sampled (compound, assay) targets (13 per fold, folds 0 to 4, 30 positives and 35 negatives, 27 assays; 57 normal, 6 sparse and 2 noise images, labelled by eye):
-
-* Occlusion is the only method that clearly beats the control maps on both deletion and insertion (DINOv3 -2.63 / +2.57, Cell-DINO -5.03 / +2.21), but its maps are at chance on cell enrichment.
-* ViT-CX is not clearly better than a centre blob on random targets (DINOv3 deletion z -0.95 vs -0.40 for the control; insertion z -0.84). Enrichment is 1.30 on DINOv3 and 1.01 on Cell-DINO.
-* Gradient-times-activation has the highest enrichment (3.27 DINOv3, 2.29 Cell-DINO), but this is partly mechanical because the map is weighted by activation.
-* ResNet-50 Grad-CAM is at chance on enrichment (1.07, 95% CI 0.90 to 1.28). Its deletion and insertion scores were not evaluated.
-* An earlier 16-target pilot gave much stronger numbers (e.g. DINOv3 ViT-CX deletion z -7.5), but those targets were the ResNet's most confident cases and half were noise images, so the pilot overstated the methods.
-
-Scripts (usage is in each script's docstring or argument parser): `run_vitcx.py` (explanations and faithfulness metrics; `METHOD=vitcx|occlusion|gradcam|centre`), `sample_targets.py` (random target sampler), `run_gradcam_r65.py` (ResNet Grad-CAM with `#k` assay indices), `make_panel.py` and `strat_panel.py` (pilot figures and intervals), `report_fig.py` (three-example report figure), `agg_r65.py` (65-target faithfulness aggregation), `contact_sheet.py` (numbered contact sheets for labelling image types), `r65_enrich.py` and `r65_resnet.py` (cell enrichment). Caveats: intervals cover target sampling only; the Cell-DINO wrapper resizes images to 128 px internally; the DINOv3 embeddings were extracted under another cluster account (training count 111,968 vs 111,984).
-
-## Task
-
-Cell Painting five-channel fluorescence microscopy images to compound bioactivity, framed as masked multi-label classification over 29 assays (labels +1 active / -1 inactive / 0 not-tested; the loss masks untested entries).
 
 ## Repository layout
 
@@ -123,30 +68,19 @@ libraries by themselves; if an import ever fails, run `export PYTHONPATH=$PWD` f
 
 Paths: `params/*.json` use relative paths (`data/images`, `data/training_paper.csv`, `src/models/`); edit them or place or link your data accordingly. The Cell-DINO code and weights are expected in `dinov2_repo/` and `celldino_weights/` (see `defaults/models.py`). Cluster job files use the placeholder `<your-namespace>` for the Kubernetes namespace and user.
 
-## Not included (live on the compute server, excluded via .gitignore)
+## Setup
 
-- Images — five-channel Cell Painting microscopy (~2 TB)
-- Training CSV — produced by the paper-faithful preparation scripts in `data_prep/`
-- Checkpoints — trained model weights (1.4–4.8 GB each)
-- Pretrained weights — loaded from a local Hugging Face cache (server runs offline)
+- Install the Python packages: `pip install -r requirements.txt`.
+- Data (not in the repository): five-channel Cell Painting images from JUMP-CP (source_11, about 2 TB), the ChEMBL 37 SQLite database, and the JUMP-CP metadata (`src/data/metadata/`, included). Put them under `data/` or set `BIOACTIVE_DATA_DIR`; see step 1 below.
+- Pretrained weights come from the Hugging Face cache (`HF_HOME`); Cell-DINO code and weights go to `dinov2_repo/` and `celldino_weights/`.
+- Trained checkpoints are not included (1.4 to 4.8 GB each); the result tables and figures of every run are in `results_showcase/`.
+- The step that builds the five-channel PNG images from the raw TIFFs was a one-off process and is not scripted here; the brightfield pipeline (`brightfield/`) is fully scripted and can serve as a template.
 
-## Pipeline overview & How to reproduce
+## How to reproduce
 
-This section documents the end-to-end pipeline behind the Results
-table above: which files run in what order, for both training regimes, and
-how everything converges into the final figures.
+The flow below shows which script feeds which. Run every command from the repository root; `docs/FILE_GUIDE.md` describes what each script does.
 
-**Note on the image-building step:** the step that builds the five-channel fluorescence
-training images (percentile-normalized PNGs from raw Cell Painting TIFFs)
-was a one-off process run early in the project and is *not* tracked as a
-script in this repo. If you are reproducing from scratch, you will need to
-rebuild an equivalent step yourself, or start from `data_paper.csv` /
-`split_data_paper.csv` plus already-built images. The newer brightfield
-extension (see below) *is* fully scripted end to end, under
-`brightfield/`, and can serve as a template for that image-building
-step.
 
-### Flow diagram
 
 ```mermaid
 flowchart TD
@@ -182,34 +116,6 @@ flowchart TD
     T1T --> GRAD["run_gradcam_v2.py<br/>(Grad-CAM visualization, ResNet only)"]
 ```
 
-### File-role manifest
-
-Script locations: `classification.py`, `extract_embeddings.py`, `train_head.py` and `dump_predictions.py` are in the repository root; every other script is in `benchmark/`, `brightfield/`, `explainability/` or `cluster/` (see Repository layout).
-
-| File | Role | Regime |
-|---|---|---|
-| `data_prep/prep_paper_faithful.py` | Builds labeled compound dataset (JUMP metadata + ChEMBL join) | Fluorescence data prep |
-| `data_prep/split_paper_faithful.py` | Butina clustering → compound-level 6-fold `split_number` | Fluorescence data prep |
-| `brightfield/01_build_brightfield_manifest.py` | Joins `training_paper.csv` against per-plate S3 load-data files to locate brightfield TIFFs | Brightfield data prep |
-| `brightfield/02_download_and_process_brightfield.py` | Downloads TIFFs from the public JUMP-CP S3 bucket, percentile-normalizes, writes 1-channel PNGs | Brightfield data prep |
-| `brightfield/04_compute_brightfield_stats.py` | Computes real per-channel mean/std from downloaded images | Brightfield data prep |
-| `classification.py` | Main CLI: trains (or `--test` evaluates) one model/resolution/fold. Used directly for fine-tuned CNNs; its arg-parsing is reused by `extract_embeddings.py` | Both (entry point) |
-| `extract_embeddings.py` | Runs a frozen backbone once per CV split, caches `{embeddings, labels, uids}` to disk — mirrors `classification.py`'s CLI exactly | Frozen probe |
-| `train_head.py` | Trains a linear head on cached embeddings; evaluates on TEST split with compound-level aggregation, writes `per_assay_auc.csv` | Frozen probe |
-| `aggregate_cv.py` | Aggregates the 6 CV folds into mean ± std test ROC-AUC per model/resolution | Both (convergence point) |
-| `cv_rescore.py` | Re-scores saved per-image predictions (`oof_predictions.csv`) at compound level into `cv_summary.csv` and `cv_per_assay.csv` per arm (used for ResNet-18 and EfficientNet-B3) | Fine-tuned CNN (re-scoring) |
-| `plot_cv_extra.py` | Per-fold and per-assay plots from `cv_summary.csv` and `cv_per_assay.csv` | Fine-tuned CNN (viz) |
-| `make_benchmark_figures.py` | Cross-arm publication figures + `benchmark_summary.csv` (model comparison, resolution effect, Friedman/Nemenyi) | Both (final viz) |
-| `make_plots_v3.py` | Per-run diagnostic plots for one `model_name` | Both (final viz) |
-| `run_gradcam_v2.py` | Grad-CAM visualization for a fine-tuned ResNet-50 | Fine-tuned CNN (inference/viz) |
-| `run_vitcx.py` | Explanations (ViT-CX, occlusion, ViT Grad-CAM, grad x act) and deletion/insertion metrics for frozen heads | Frozen probe (explainability) |
-| `run_gradcam_r65.py` | `run_gradcam_v2.py` plus `#k` assay indices, used for the 65 random targets | Fine-tuned CNN (explainability) |
-| `sample_targets.py` | Draws random (compound, assay) targets from out-of-fold predictions | Explainability |
-| `agg_r65.py`, `r65_enrich.py`, `r65_resnet.py`, `contact_sheet.py` | Aggregation, enrichment and labelling helpers for the 65-target replication | Explainability |
-| `defaults/models.py` | Model definitions, including channel-adaptation logic for brightfield (1-channel) arms | Shared |
-| `defaults/datasets.py` | Dataset classes, including `BioActBrightfield` | Shared |
-
-### Exact commands
 
 **1. Data prep (fluorescence, run once):**
 ```bash
@@ -262,21 +168,23 @@ python3 benchmark/make_plots_v3.py bioact_resnet_r448_fold0   # per-run diagnost
 python3 explainability/run_gradcam_v2.py --targets <csv_of_targets> --out <output_dir> --model resnet --res 448
 ```
 
-## Experimental design (original single-fold comparison, superseded above)
 
-*The design below describes the project's original ResNet-50 vs. DINOv2-Base/CLIP/BiomedCLIP
-comparison: a single fixed fold, with the three ViTs fully fine-tuned end-to-end (AdamW). This
-predates, and uses a different recipe and evaluation protocol from, the frozen-linear-probe
-6-fold CV benchmark reported in "Results" above (locked SGD recipe, `extract_embeddings.py` +
-`train_head.py`, compound-level aggregation). It is kept here as a record of the project's first
-pass; the current main benchmark is the one above.*
+**5. Explainability and verification:**
 
-- **Single fixed fold** (folds 0–3 train / 4 val / 5 test) — identical across all models, so model-to-model comparison is internally valid. Comparison to the paper's 6-fold CV mean is indicative.
-- **Per-architecture hyperparameters** — ResNet-50: SGD, lr 1e-3, batch 64. All three ViTs: AdamW, lr 1e-4, batch 16 (matched). ReduceLROnPlateau scheduling for all.
-- **Resolution** — ResNet-50 and DINOv2 at 448; CLIP-family at native 224 (positional embeddings do not transfer to 448). Field of view held identical across all models.
-- **Single seed** — run-to-run variance ≈ ±0.02 ROC-AUC; only differences above this scale are interpreted. Model ordering between the 448 px fine-tuned CNNs (0.669 to 0.679) and the frozen probes (0.621 to 0.641) is robust to it; the ordering among the three fine-tuned CNNs (differences of 0.003 to 0.010 at 448 px) is not.
+Usage of each explainability script is in its docstring (`explainability/`); the job specs used for the reported runs are `cluster/jobs/r65-*.yaml` and `cluster/jobs/vitcx-*.yaml`. Then check the numbers:
 
-Full reasoning and limitations are in `docs/Project_Bioactive_Methodology.md`.
+`python3 verify/verify_claims.py`
+
+
+## Repository guide (for reviewers)
+
+| What | Where |
+|---|---|
+| Check the headline numbers against the committed result files | verify/ (run `python3 verify/verify_claims.py`; see VERIFY.md) |
+| Errors found and corrected in our own work | verify/CORRECTIONS.md |
+| Explainability heat maps, tables and regeneration notes | results_showcase/explainability/ |
+| Brightfield vs fluorescence results and paired tests | results_showcase/brightfield_vs_fluorescence/ |
+| Cluster job specs and parameter files behind each run | cluster/jobs/, params/ |
 
 ## Reference
 
@@ -299,154 +207,3 @@ Apache License 2.0, unchanged from the original repository (`LICENSE`). `NOTICE`
 ## Acknowledgements
 
 This work was carried out as a practicum at the University of Würzburg under the supervision of Dr. Zongwie Wu. The original data pipeline, assay setup and training code are by the authors of the paper above.
-
-## Evaluation protocol fix — frozen-backbone models (2026-10-03)
-
-### What was wrong
-
-All six-fold CV results for frozen-backbone models (DINOv2 small/base/large,
-DINOv3-Base, Cell-DINO, CLIP ViT-L/14, BiomedCLIP — anything trained via
-`extract_embeddings.py` + `train_head.py`) were computed on **raw per-image
-predictions, with no aggregation across a compound's multiple site images**.
-
-The fine-tuned CNN pipeline (`classification.py` → `defaults/trainer.py` →
-`utils/metrics.py`'s `evaluate_predictions()`) has always aggregated
-predictions to compound level before scoring:
-
-```python
-preds[assays] = sigmoid(preds[assays].values)
-preds_combined = preds.groupby("compound").mean()
-```
-
-`train_head.py` — which evaluates a linear head on cached, frozen-backbone
-embeddings — never had an equivalent step. It scored every image
-independently:
-
-```python
-test_logits = head(Xte.to(device)).cpu().numpy()
-test_mean, _ = mean_roc_auc(Yte.numpy(), test_logits, do_sigmoid=True)
-```
-
-### Why that matters
-
-Every assay label is a compound-level property (ChEMBL potency annotation,
-not an image-level one) — all site images of the same well carry an
-identical label. Scoring each image as an independent test case is
-pseudo-replication: correlated, repeated observations of one ground truth
-were fed into the AUC calculation as if they were independent samples, and
-skipping the averaging step left in per-image noise (site-to-site cell
-confluence, debris, illumination variation) that the multi-site imaging
-protocol is specifically designed to be averaged away. Single-image scoring
-systematically under-estimates a model's true compound-level discriminative
-power.
-
-### Impact
-
-Found while building a matched fluorescence baseline for a brightfield
-imaging ablation and noticing the evaluation code paths diverged. A
-retrospective audit of all frozen-backbone results showed every one
-under-reporting AUC by ~0.04–0.05:
-
-| Model | Per-image (uncorrected) | Compound-level (corrected) | Δ |
-|---|---|---|---|
-| DINOv2-Large r448 | 0.5868 | **0.6412** | +0.0544 |
-| DINOv3-Base r448 | 0.5863 | 0.6398 | +0.0535 |
-| DINOv2-Base r448 | 0.5842 | 0.6371 | +0.0529 |
-| Cell-DINO r224 | 0.5892 | 0.6333 | +0.0441 |
-| Cell-DINO r448 | 0.5899 | 0.6333 | +0.0434 |
-| DINOv2-Large r224 | 0.5783 | 0.6299 | +0.0516 |
-| DINOv3-Base r224 | 0.5761 | 0.6281 | +0.0520 |
-| DINOv2-Base r224 | 0.5749 | 0.6272 | +0.0523 |
-| DINOv2-Small r224 | 0.5761 | 0.6259 | +0.0498 |
-| CLIP ViT-L/14 r224 | 0.5785 | 0.6257 | +0.0472 |
-| BiomedCLIP r224 | 0.5754 | 0.6214 | +0.0460 |
-
-Mean over 6 folds, all 29 assays, all runs of the first author. (DINOv3 r224/r448
-and CLIP r224 results from Bhartendu Parihar's runs could not be corrected
-retroactively — raw per-image predictions were never saved for those runs,
-only the aggregate `per_assay_auc.csv`.)
-
-**Under the verified recipe the best frozen probe is DINOv2-Large r448 (0.6412), but the frozen
-probes span only 0.621-0.641, within the fold-to-fold standard deviation; the 0.6448 reported for
-DINOv3-Base r448 on 2026-10-03 reproduces to within 0.005 (0.6398).** Fine-tuned CNN results (ResNet-50, ResNet-18,
-EfficientNet-B3) and the LoRA parameter-efficient arm were unaffected — both
-go through `trainer.py`/`metrics.py` and already aggregated by compound
-correctly.
-
-### Recipe and re-run verification (2026-10-06)
-
-**Frozen-probe recipe (identical for every frozen backbone):** frozen backbone, cached CLS
-embeddings, `Linear(D, 29)` head, masked focal-BCE loss, SGD momentum 0.9 + cosine schedule, lr 0.02,
-train-only feature standardization, early stopping on compound-level validation ROC-AUC (patience 6).
-The learning rate was chosen in a fold-0 sweep on Cell-DINO (during the original per-image
-evaluation phase) and then fixed for all frozen backbones. ResNet-50 and LoRA were tuned
-individually, so the fine-tuned-vs-frozen comparison includes a tuning advantage for the fine-tuned
-arms, and Cell-DINO may hold a small one among the frozen probes.
-
-**Re-run.** The results first reported after this fix (2026-10-03 batch) could not be reproduced
-from the committed code: the `train_head.py` default is `--lr 0.005`, whereas the original runs were
-launched with `--lr 0.02` (recorded in their `*_head_metrics.json`). Three of them (DINOv2,
-DINOv2-Large and Cell-DINO at 448) had in fact been run at lr 0.005 and stopped at the 100-epoch cap
-without converging, which produced the earlier finding that 448 "hurts" those backbones. All 11 frozen
-configurations (66 runs) were therefore re-run on the committed code with an explicit `--lr 0.02`, and
-the replaced results are backed up. Relative to the original batch, the 224 results moved by -0.001
-to -0.007 and DINOv3-Base r448 by -0.005, which is attributable to early stopping and checkpoint
-selection now using compound-level validation (it stops earlier); the 448 runs that had used the
-wrong lr rose by 0.010-0.020. Independent checks: per-assay AUC recomputed from the saved
-compound-level `test_preds.csv`/`test_labels.csv` (labels 0 = untested excluded) equals the reported
-values to ~1e-16 on three spot-checked runs, and no compound appears in more than one split.
-Per-model `results_showcase/<model>/README.md` narratives and
-`results_showcase/benchmark_figures/README.md` are being rewritten from these numbers.
-
-### Fix applied
-
-- `train_head.py` now builds a `(plate, well) → compound` lookup from
-  `training_paper.csv`, maps each cached embedding's `uid`
-  (`PLATE/WELL_SITE.png`) back to its compound, averages sigmoid
-  probabilities per compound, and computes AUC on the aggregated values —
-  matching `evaluate_predictions()`'s logic exactly. The old per-image mean
-  is still recorded (as `test_mean_roc_auc_per_image_UNCORRECTED` in
-  `head_metrics.json`) for audit purposes, but is no longer the reported
-  metric.
-- All historical results for the 8 affected models (48 fold-runs) were
-  corrected in place by re-aggregating their already-saved per-image
-  `test_preds.csv`/`test_labels.csv` — no retraining was needed, since the
-  frozen backbone and trained head weights were untouched by this fix. The
-  original per-image files are preserved alongside the corrected ones as
-  `test_preds_per_image_UNCORRECTED.csv`, `test_labels_per_image_UNCORRECTED.csv`,
-  and `per_assay_auc_per_image_UNCORRECTED.csv` in each fold's `plots/`
-  directory.
-
-### Resolved (2026-10-03)
-
-- **The top "Results" table has been regenerated** from the corrected 6-fold
-  CV numbers (see above), replacing the old single-fixed-fold comparison.
-- **All benchmark figures/tables were regenerated** (`make_benchmark_figures.py`,
-  `make_adaptation_figure.py`, `make_pr_calibration_pareto.py`) from the
-  corrected `per_assay_auc.csv` files -- see `results_showcase/benchmark_figures/`.
-  (Wilcoxon was dropped from this pass; Friedman + Nemenyi remain.) All 11
-  affected `results_showcase/<model>/README.md` narratives were fully
-  rewritten, not just number-swapped, since several statistical conclusions
-  changed or reversed under correction (see each folder's README for specifics;
-  the resolution-effect reversal and the Cell-DINO/ResNet50 significance
-  collapse are the two largest).
-- **Parihar's `dinov3_r224`/`dinov3_r448`/`clip_r224` runs were re-run** with the patched
-  `train_head.py` against his cached embeddings (read-only; all new output kept under this
-  account's own directory tree, never written into his). Results are in `results_showcase/parihar_*`.
-  His DINOv3 r448 embeddings are identical copies of this account's own, so they are one
-  extraction, not two independent ones. His re-run used the `train_head.py` default lr 0.005
-  (not the locked 0.02), so those numbers are not comparable to the table above and are kept for
-  reference only.
-- Additionally found and fixed during this pass: `train_head.py`'s
-  **validation-time** scoring (used for early stopping / checkpoint
-  selection) had the same per-image aggregation bug as the test-time scoring
-  above. Patched to score validation at compound level too. Spot-checked
-  before trusting the already-reported numbers: the old per-image validation
-  metric and the corrected compound-level one agreed on epoch-to-epoch
-  ordering 97-99% of the time, and picked checkpoints within 0.0001 ROC-AUC
-  of each other -- so no retraining was needed and no already-reported
-  number changes, but future runs are now scored correctly end to end.
-- `clip_vitl14_adamw_224` (a different training recipe -- AdamW, full-image,
-  not the locked SGD linear-probe recipe shared by every frozen arm) was
-  removed from `results_showcase/` as an invalid peer comparison, rather than
-  corrected -- it was never comparing like with like.
