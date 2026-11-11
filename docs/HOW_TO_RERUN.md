@@ -55,7 +55,10 @@ ROC-AUC. Then run `python3 verify/verify_claims.py` to check the published numbe
 
 ## What is tested
 
-The submit script was tested end to end up to the start of training for `resnet 224 0`
-and the start of embedding extraction for `celldino 224 0`. The other models use the
-same code paths but were not smoke-tested through this script. Brightfield and
+Tested on our cluster: `resnet 224 0` up to the start of training, and `celldino 224 0`
+end to end. The Cell-DINO rerun gave a fold-0 test ROC-AUC of 0.6256, against 0.6247 in
+`results/2_pretrained_vision_models/celldino_224/cv_summary.csv` (fold-to-fold spread 0.012).
+It took about 1.5 hours, almost all of it embedding extraction, because every image is read
+once; the head then trains in minutes. The other models use the same code paths but were
+not smoke-tested through this script. Brightfield and
 explainability runs have their own job files in `cluster/jobs/`.
