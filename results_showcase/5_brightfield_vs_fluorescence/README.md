@@ -28,7 +28,7 @@ The same comparison file also shows that fine-tuned brightfield ResNet-50 at 448
 No retraining. The five-channel ResNet-50 trained on fluorescence (102 plates, 448 px) was scored on the brightfield
 images of the same test compounds, once with the fluorescence image statistics and once with the brightfield statistics
 (brightfield/dump_predictions_bf5.py, brightfield/cv_rescore.py, brightfield/make_control_plot.py).
-Table, csv and figure are in ../4_explainability/xai_cnn/control/.
+Table, csv and figure are in control_fluorescence_on_brightfield/.
 
 | Condition | Mean AUC | SD over folds | Fold range | Scoring |
 |---|---|---|---|---|
@@ -38,6 +38,8 @@ Table, csv and figure are in ../4_explainability/xai_cnn/control/.
 | Fluorescence-trained on brightfield (bf norm) | 0.524 | 0.039 | 0.48-0.57 | cv_rescore.py |
 
 The fluorescence-trained model does not transfer to brightfield images: its score falls to about 0.5 (chance level).
+
+![Control: fluorescence-trained model on fluorescence and brightfield images](control_fluorescence_on_brightfield/control_auc.png)
 
 ### Brightfield through the one-channel adaptation
 

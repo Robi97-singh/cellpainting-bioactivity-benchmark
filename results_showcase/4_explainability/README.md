@@ -43,4 +43,4 @@ Image groups (normal, sparse, noise) were labelled by eye from the contact sheet
 | Foreground and background evaluation | xai_cnn/fgbg_mask/ |
 | Gradient times activation on the 65 random targets | random_65_targets/enrich_r65.csv, xai_vit/, xai_cnn/gradxinput_resnet448.csv |
 | Brightfield copied into every channel | ../5_brightfield_vs_fluorescence/README.md (first-layer check) |
-| Fluorescence model scored on brightfield | xai_cnn/control/ and ../5_brightfield_vs_fluorescence/README.md |
+| Fluorescence model scored on brightfield | ../5_brightfield_vs_fluorescence/control_fluorescence_on_brightfield/ |
