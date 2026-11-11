@@ -7,17 +7,17 @@
 #   ./cluster/run_experiment.sh celldino 224 3        # frozen Cell-DINO, 224 px, fold 3
 #   DRY=1 ./cluster/run_experiment.sh resnet 224 0    # print the job, do not submit
 #
-# Fine-tuned models  (resnet resnet18 effnet lora_vit_s):  classification.py
+# End-to-end models  (resnet resnet18 effnet lora_vit_s):  classification.py
 # Frozen models      (dino dino_small dino_large dinov3 celldino clip biomedclip):
 #                    extract_embeddings.py, then train_head.py
-# Force the other path with MODE=finetune or MODE=frozen.
+# Force the other path with MODE=end2end or MODE=frozen.
 #
 # Settings you may need to override (environment variables):
 #   NS        cluster namespace = user name (default: current kubectl namespace)
 #   RUN_UID   numeric user id the pod runs as (default: your own id); RUN_GID group (default 1376, the shared group that owns the venv)
 #   VENV      virtualenv to activate (default /shared/ssd/home/$NS/venv)
 #   PARAMS    params file, replaces the automatic choice
-#   BATCH     batch size for fine-tuned runs
+#   BATCH     batch size for end-to-end runs
 set -euo pipefail
 
 usage() { sed -n '2,15p' "$0"; exit 1; }
@@ -37,16 +37,16 @@ case "$REPO" in "$HOME_DIR"/*) ;; *) echo "Repository must be under $HOME_DIR (i
 
 if [ -z "${MODE:-}" ]; then
   case "$MODEL" in
-    resnet|resnet18|effnet|lora_vit_s) MODE=finetune;;
+    resnet|resnet18|effnet|lora_vit_s) MODE=end2end;;
     dino|dino_small|dino_large|dinov3|celldino|clip|biomedclip) MODE=frozen;;
-    *) echo "Unknown model '$MODEL'. Set MODE=finetune or MODE=frozen to force one." >&2; exit 1;;
+    *) echo "Unknown model '$MODEL'. Set MODE=end2end or MODE=frozen to force one." >&2; exit 1;;
   esac
 fi
 
 NAME="rerun-$(echo "$MODEL" | tr '_' '-')-r$RES-f$FOLD-$(date +%H%M%S)"
 RUN="bioact_${MODEL}_r${RES}"
 
-if [ "$MODE" = finetune ]; then
+if [ "$MODE" = end2end ]; then
   case "$MODEL" in
     lora_vit_s) P="params/params_lora_vit_small_cluster.json"; B=32;;
     effnet)     if [ "$RES" = 224 ]; then P='params/params_efficientnet_b3_r224_fold$fold.json'; else P='params/params_efficientnet_b3_fold$fold.json'; fi; B=64;;

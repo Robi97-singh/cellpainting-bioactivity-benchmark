@@ -19,7 +19,7 @@ Follow a run with `kubectl logs -f job/<name> -n <namespace>`; the script prints
 
 Resolution is 224 or 448. CLIP and BiomedCLIP are limited to 224 by their positional embeddings.
 Folds are 0 to 5, or `all` for a sequential loop over the six folds in one job.
-`MODE=finetune` or `MODE=frozen` forces the other path for a model.
+`MODE=end2end` or `MODE=frozen` forces the other path for a model.
 `PARAMS=<file>` and `BATCH=<n>` override the parameter file and batch size.
 
 ## One-time setup
