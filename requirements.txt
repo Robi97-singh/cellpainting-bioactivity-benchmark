@@ -69,4 +69,4 @@ umap-learn>=0.5.3                   # UMAP embeddings (optional, for visualisati
 #
 # 5. For cloud instances, mount data SSD and set paths in params/*.json
 #
-# ──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────easydict>=1.9
