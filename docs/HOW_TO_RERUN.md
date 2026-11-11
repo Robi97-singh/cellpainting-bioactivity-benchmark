@@ -14,7 +14,7 @@ Follow a run with `kubectl logs -f job/<name> -n <namespace>`; the script prints
 
 | Model name | Kind | What runs |
 |---|---|---|
-| resnet, resnet18, effnet, lora_vit_s | fine-tuned | `classification.py`, then `analysis/make_plots_v3.py` |
+| resnet, resnet18, effnet, lora_vit_s | End To End  | `classification.py`, then `analysis/make_plots_v3.py` |
 | dino_small, dino, dino_large, dinov3, celldino, clip, biomedclip | frozen | `extract_embeddings.py`, then `train_head.py` (learning rate 0.02) |
 
 Resolution is 224 or 448. CLIP and BiomedCLIP are limited to 224 by their positional embeddings.
