@@ -32,3 +32,15 @@ Reading: only occlusion clearly beats the control maps on both deletion and inse
 All scripts are in the repository root and describe their arguments in their docstrings. Inputs (images, embeddings, checkpoints) are not in the repository. Order: sample_targets.py (target sampling), run_vitcx.py (explanations and metrics, launched by jobs/r65-*.yaml with METHOD=vitcx, occlusion, gradcam or centre), run_gradcam_r65.py (ResNet reference, jobs/r65-gcam-resnet.yaml), contact_sheet.py (numbered images for labelling), agg_r65.py (faithfulness tables), r65_enrich.py and r65_resnet.py (enrichment tables), make_panel.py (heat-map panels and intervals).
 
 Image groups (normal, sparse, noise) were labelled by eye from the contact sheets and are encoded in r65_enrich.py and r65_resnet.py.
+
+
+## Where each requested analysis is (November 2026)
+
+| Request | Location |
+|---|---|
+| How the five channels become the three-colour picture under the heat map | xai_cnn/README.md and pilot_archive/resnet50_gradcam/README.md |
+| Per-channel analysis (effect of removing each stain) | xai_cnn/ablation_resnet448.csv, xai_cnn/channel_correlation.txt |
+| Foreground and background evaluation | xai_cnn/fgbg_mask/ |
+| Gradient times activation on the 65 random targets | random_65_targets/enrich_r65.csv, xai_vit/, xai_cnn/gradxinput_resnet448.csv |
+| Brightfield copied into every channel | ../5_brightfield_vs_fluorescence/README.md (first-layer check) |
+| Fluorescence model scored on brightfield | xai_cnn/control/ and ../5_brightfield_vs_fluorescence/README.md |
