@@ -45,7 +45,7 @@ Why this is comparable to the fine-tuned ResNet 0.6638 / 0.6792:
 Usage (CPU is fine; GPU optional and faster):
   python train_head.py --model celldino --res 224 --fold 0 \
       --save_dir src/models \
-      --epochs 100 --patience 6 --lr 1e-3
+      --epochs 100 --patience 6 --lr 0.02
 """
 import os
 import sys
@@ -173,7 +173,7 @@ def main():
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--patience", type=int, default=6)   # matches ResNet
     # DINO linear-probe convention: SGD + momentum + cosine LR schedule.
-    ap.add_argument("--lr", type=float, default=0.02)  # locked frozen-probe recipe (fold-0 sweep on Cell-DINO)   # DINO probe default range 1e-3..5e-3
+    ap.add_argument("--lr", type=float, default=0.02)  # locked frozen-probe recipe (fold-0 sweep on Cell-DINO)
     ap.add_argument("--momentum", type=float, default=0.9)
     ap.add_argument("--weight_decay", type=float, default=0.0)
     ap.add_argument("--feature", choices=["cls", "cls_avgpool"], default="cls",

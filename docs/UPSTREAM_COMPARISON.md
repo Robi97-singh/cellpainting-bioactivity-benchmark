@@ -52,7 +52,7 @@ training CSV lists them as its numeric column names, so anyone with the paper's 
 | Folder | Content |
 |---|---|
 | root | `extract_embeddings.py`, `train_head.py`, `dump_predictions.py` (frozen embeddings and trained heads) |
-| `analysis/` | aggregation of the cross-validation results, statistics (Friedman, Wilcoxon), figures |
+| `analysis/` | aggregation of the cross-validation results, statistics (Friedman, Nemenyi; Wilcoxon not used in the report), figures |
 | `brightfield/` | brightfield-only and fluorescence-adaptation experiments |
 | `explainability/` | Grad-CAM, ViT-CX, occlusion, per-channel ablation, centre-box control, foreground/background masking test |
 | `cluster/` | job generators and example job files (Kubernetes) |

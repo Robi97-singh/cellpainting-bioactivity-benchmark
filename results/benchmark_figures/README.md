@@ -108,7 +108,7 @@ Nemenyi pairwise p-values (9 arms, 29 assays as blocks; bold = significant at 0.
 - **Figure B is 224-only and frozen + end-to-end CNNs**, so the Friedman/Nemenyi test isolates the backbone question from resolution.
 - **LoRA and its same-backbone frozen baseline are shown in Figure D, not B**: LoRA is a different training regime (own recipe).
 - **448 exists for the DINO-family backbones and the three CNNs.** BiomedCLIP and CLIP are fixed at 224.
-- **Recipe asymmetry:** frozen probes share one locked recipe for a fair benchmark; ResNet50, ResNet-18, EfficientNet-B3 and LoRA use individually tuned recipes (ResNet-18 and EfficientNet-B3 by Bhartendu Parihar; ResNet-18 with early stopping).
+- **Recipe asymmetry:** frozen probes share one locked recipe for a fair benchmark; ResNet50, ResNet-18, EfficientNet-B3 and LoRA use their own recipes (ResNet-18 and EfficientNet-B3 by Bhartendu Parihar; ResNet-18 with early stopping).
 - **Not included:** individual-assay ROC curves for most arms (per-sample predictions are saved only for some arms).
 
 ## Reproducing

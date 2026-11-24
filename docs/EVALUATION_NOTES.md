@@ -81,12 +81,11 @@ correctly.
 embeddings, `Linear(D, 29)` head, masked focal-BCE loss, SGD momentum 0.9 + cosine schedule, lr 0.02,
 train-only feature standardization, early stopping on compound-level validation ROC-AUC (patience 6).
 The learning rate was chosen in a fold-0 sweep on Cell-DINO (during the original per-image
-evaluation phase) and then fixed for all frozen backbones. ResNet-50 and LoRA were tuned
-individually, so the end-to-end-vs-frozen comparison includes a tuning advantage for the end-to-end trained
+evaluation phase) and then fixed for all frozen backbones. ResNet-50 and LoRA use their own recipes, so the end-to-end-vs-frozen comparison may include a tuning advantage for the end-to-end trained
 arms, and Cell-DINO may hold a small one among the frozen probes.
 
 **Re-run.** The results first reported after this fix (2026-10-03 batch) could not be reproduced
-from the committed code: the `train_head.py` default is `--lr 0.005`, whereas the original runs were
+from the code as committed at that time: the `train_head.py` default was `--lr 0.005` (it is now 0.02), whereas the original runs were
 launched with `--lr 0.02` (recorded in their `*_head_metrics.json`). Three of them (DINOv2,
 DINOv2-Large and Cell-DINO at 448) had in fact been run at lr 0.005 and stopped at the 100-epoch cap
 without converging, which produced the earlier finding that 448 "hurts" those backbones. All 11 frozen

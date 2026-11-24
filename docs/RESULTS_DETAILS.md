@@ -32,7 +32,7 @@ DINOv2 r224, DINOv3-Base r224, DINOv2-Small, CLIP and BiomedCLIP, but not from t
 probes or Cell-DINO. LoRA-adapted DINOv2-Small (0.6373) is +0.011 above its frozen backbone and level
 with the best frozen 448 probes; it is not part of the significance tests. Caveat: the frozen recipe
 (lr 0.02) was selected in a fold-0 sweep on Cell-DINO and applied unchanged to all frozen backbones,
-whereas ResNet-50 and LoRA use individually tuned recipes. See `results/benchmark_figures/README.md`
+whereas ResNet-50 and LoRA use their own recipes. See `results/benchmark_figures/README.md`
 and `docs/Project_Bioactive_Methodology.md` (updated 2026-10-21 with the corrected
 benchmark, the brightfield vs fluorescence comparison and the explainability results).
 

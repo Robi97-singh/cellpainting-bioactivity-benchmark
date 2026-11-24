@@ -40,7 +40,7 @@ The original paper reports 0.660 +/- 0.094 on the public JUMP-CP benchmark. It i
 - LoRA on DINOv2-Small is +0.011 above its frozen backbone.
 - Brightfield versus fluorescence (ResNet-50, 448 px, 102 plates): no significant difference (-0.016 AUC, p = 0.19).
 - Explainability (65 random targets): occlusion is the only method that clearly beats image-independent control maps; ViT-CX is not clearly better than a centre blob.
-- Caveat: one frozen recipe (lr 0.02, chosen in a fold-0 sweep on Cell-DINO) is used for all frozen backbones, while ResNet-50 and LoRA are tuned individually.
+- Caveat: one frozen recipe (lr 0.02, chosen in a fold-0 sweep on Cell-DINO) is used for all frozen backbones, while ResNet-50 and LoRA use their own recipes that were not tuned against the frozen probes.
 
 Statistics, the brightfield study and the explainability results are in [docs/RESULTS_DETAILS.md](docs/RESULTS_DETAILS.md).
 Why the frozen-probe results are scored per compound, and the history of the re-runs: [docs/EVALUATION_NOTES.md](docs/EVALUATION_NOTES.md).
@@ -56,7 +56,7 @@ libraries by themselves; if an import ever fails, run `export PYTHONPATH=$PWD` f
 - `classification.py`, `extract_embeddings.py`, `train_head.py`, `dump_predictions.py` - entry points (repository root): train and test one model, cache frozen embeddings, train the linear head, dump predictions
 - `defaults/`, `utils/`, `params/`, `src/` - model definitions, trainer, datasets, losses and metrics, one JSON config per model, JUMP-CP metadata
 - `data_prep/` - data preparation (JUMP-CP + ChEMBL) and download notes
-- `analysis/` - cross-validation aggregation, statistics (Friedman/Nemenyi, Wilcoxon), benchmark figures and tables
+- `analysis/` - cross-validation aggregation, statistics (Friedman/Nemenyi; a Wilcoxon script is included but not used in the report), benchmark figures and tables
 - `brightfield/` - brightfield versus fluorescence study: download and preparation, first-layer adaptation checks, cross-modality control
 - `explainability/` - ViT-CX, occlusion, Grad-CAM, per-stain ablation, gradient x input, foreground/background masking, summary figures
 - `cluster/` - job generators and example Kubernetes job files (paths are those of our cluster and must be adapted)

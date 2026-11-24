@@ -19,7 +19,7 @@ Three regimes are compared on an identical split and evaluation protocol.
 - **Frozen backbones with a linear probe.** Each backbone is run once per split by `extract_embeddings.py` and the embeddings are cached. `train_head.py` then trains a linear head on the cached embeddings. Backbones: DINOv2 (Small, Base, Large), DINOv3-Base, Cell-DINO, CLIP ViT-L/14 and BiomedCLIP, at 224 px and, for the DINO family, 448 px. The head uses the standardized CLS embedding.
 - **LoRA adaptation** of DINOv2-Small at 224 px, with 2.4% of the parameters trainable.
 
-One locked linear-probe recipe is used for every frozen backbone. Its learning rate (0.02) was selected in a fold-0 sweep on Cell-DINO and applied unchanged to all the others. ResNet-50 and LoRA use individually tuned recipes, which favours them; this is stated as a caveat wherever the results are compared.
+One locked linear-probe recipe is used for every frozen backbone. Its learning rate (0.02) was selected in a fold-0 sweep on Cell-DINO and applied unchanged to all the others. ResNet-50 and LoRA use their own recipes, which favours them; this is stated as a caveat wherever the results are compared.
 
 ## Evaluation protocol
 
@@ -121,7 +121,7 @@ On 65 randomly sampled targets, occlusion is the only explanation method that cl
 
 The benchmark ranking is robust at the level of "end-to-end CNNs first, frozen probes tied", but several design choices limit what can be concluded.
 
-- **Unequal tuning:** the frozen recipe (learning rate 0.02) was selected on fold 0 with Cell-DINO and applied unchanged to all frozen backbones, whereas ResNet-50 and LoRA use individually tuned recipes.
+- **Unequal tuning:** the frozen recipe (learning rate 0.02) was selected on fold 0 with Cell-DINO and applied unchanged to all frozen backbones, whereas ResNet-50 and LoRA use their own recipes.
 - **Cell-DINO input:** its wrapper resizes images to 128 px internally, so its explanation maps are coarse.
 - **DINOv3 embeddings:** they were extracted under another cluster account, and the training-set count differs slightly (111,968 against 111,984).
 - **Explainability intervals** cover target sampling only. They do not reflect the choice of images or of method settings, and image groups were labelled by eye.
