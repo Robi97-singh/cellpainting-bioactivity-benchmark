@@ -14,7 +14,7 @@ Public benchmark reference: **0.660 ± 0.094**.
 | **ResNet50 @ 224 (primary)** | 224 | resize 1080->540, crop 224 | 224/540 = **0.415** | **0.6638 +/- 0.0153** |
 | **ResNet50 @ 224 (FOV 0.450)** | 224 | resize 1080->498, crop 224 | 224/498 = **0.450** | **0.6623 +/- 0.0223** |
 
-Per-channel images are 1080x1080 (five channels: DNA, ER, RNA, AGP, Mito).
+Per-channel images are 1080x1080 (five channels: DNA, AGP, ER, Mito, RNA).
 Field of view = crop size / image size = the fraction of the imaged area the network sees.
 
 ## What this shows

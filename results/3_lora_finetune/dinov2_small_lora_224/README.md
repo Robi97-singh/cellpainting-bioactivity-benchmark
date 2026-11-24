@@ -67,9 +67,9 @@ injected on the `query` and `value` projections of every attention block via `pe
 (`inject_adapter_in_model`), rank=8, alpha=16, dropout=0.05, bias=none. The base backbone is
 frozen; only the LoRA adapter matrices, the re-adapted 5-channel patch embedding (never seen
 this input distribution during pretraining), and the linear classification head are
-trainable. Training uses AdamW with a cosine-decaying learning rate (starting at 1e-4, halving
-periodically down to ~3e-6 by late epochs), masked focal-BCE loss, early stopping on
-validation ROC-AUC (patience 6 checks, `val_every=5` epochs). This is a deliberately different
+trainable. Training uses AdamW with a learning rate of 1e-4 that is halved by ReduceLROnPlateau
+(factor 0.5, patience 10 epochs, score refreshed every 5 epochs), masked focal-BCE loss, early stopping on
+validation ROC-AUC (patience 8 checks, `val_every=5` epochs). This is a deliberately different
 recipe from the frozen linear-probe arms (SGD, lr=0.02) -- LoRA is a different regime
 (adapting weights inside the backbone through a much deeper computational graph), and using
 the linear-probe's higher SGD learning rate here would very likely destabilize training. Each

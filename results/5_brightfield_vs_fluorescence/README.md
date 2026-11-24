@@ -1,6 +1,6 @@
 # Brightfield vs fluorescence (ResNet-50, 448 px, same 102 plates)
 
-A one-channel brightfield ResNet-50 and a five-channel fluorescence ResNet-50 were trained at 448 px on the same 102 plates, one job per fold, over all six folds (same split and compound-level aggregation as the main benchmark). The question: do the fluorescence channels carry information that brightfield lacks?
+A one-channel brightfield ResNet-50 and a five-channel fluorescence ResNet-50 were trained at 448 px on the same 102 plates (of 174; 88,130 images of 4,836 compounds), one job per fold, over all six folds (same split and compound-level aggregation as the main benchmark). The question: do the fluorescence channels carry information that brightfield lacks?
 
 Folders: `brightfield_resnet_r448/` and `fluorescence_resnet_r448_102plates/` each hold cv_summary.csv (per-fold test ROC-AUC), cv_per_assay.csv, cv_fold_spread.png, cv_per_assay.png and cv_val_curves.png (produced by aggregate_cv.py). `compare_resnet_output.txt` is the saved output of compare_resnet.py, including the paired tests below.
 

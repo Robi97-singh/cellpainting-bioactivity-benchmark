@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: robin-bioact-brightfield-adaptcheck-cpu
-  namespace: b-r-singh1
+  namespace: USER
 spec:
   backoffLimit: 0
   template:
@@ -16,17 +16,17 @@ spec:
       containers:
       - name: importcheck
         image: abrainone/ai-linux:cu12.6.3-latest
-        workingDir: /shared/ssd/home/b-r-singh1/bioactive
+        workingDir: /shared/ssd/home/USER/bioactive
         command: ["bash", "-lc"]
         args:
         - >-
-          source /shared/ssd/home/b-r-singh1/venv/bin/activate &&
+          source /shared/ssd/home/USER/venv/bin/activate &&
           python3 -c "from defaults.datasets import BioAct, BioActBrightfield; from defaults.models import DINOv3Classifier, CellDINOClassifier; print('imports OK')" &&
           PYTHONPATH=. python3 scripts/brightfield/06_verify_1ch_models.py && PYTHONPATH=. python3 scripts/brightfield/07_verify_sum_adaptation.py
         env:
         - { name: WANDB_MODE,      value: "disabled" }
-        - { name: BIOACT_SAVE_DIR, value: "/shared/ssd/logs/b-r-singh1" }
-        - { name: HF_HOME,         value: "/shared/ssd/home/b-r-singh1/hf_cache" }
+        - { name: BIOACT_SAVE_DIR, value: "/shared/ssd/logs/USER" }
+        - { name: HF_HOME,         value: "/shared/ssd/home/USER/hf_cache" }
         - { name: PYTHONUNBUFFERED, value: "1" }
         - name: HF_TOKEN
           valueFrom:
@@ -35,16 +35,16 @@ spec:
           requests: { cpu: 4, memory: 16Gi }
           limits:   { cpu: 8, memory: 24Gi }
         volumeMounts:
-        - { mountPath: /shared/ssd/home/b-r-singh1, name: home }
+        - { mountPath: /shared/ssd/home/USER, name: home }
         - { mountPath: /shared/hdd/data/bioactive, name: data, readOnly: true }
-        - { mountPath: /shared/ssd/logs/b-r-singh1, name: logs }
+        - { mountPath: /shared/ssd/logs/USER, name: logs }
         - { mountPath: /dev/shm, name: dshm }
       volumes:
       - name: home
-        hostPath: { path: /shared/ssd/home/b-r-singh1, type: Directory }
+        hostPath: { path: /shared/ssd/home/USER, type: Directory }
       - name: data
         hostPath: { path: /shared/hdd/data/bioactive, type: Directory }
       - name: logs
-        hostPath: { path: /shared/ssd/logs/b-r-singh1, type: Directory }
+        hostPath: { path: /shared/ssd/logs/USER, type: Directory }
       - name: dshm
         emptyDir: { medium: Memory, sizeLimit: 8Gi }

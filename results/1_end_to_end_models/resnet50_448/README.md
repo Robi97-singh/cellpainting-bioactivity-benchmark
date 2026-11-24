@@ -95,17 +95,14 @@ The complete per-fold graph set, shown for fold 0 as a representative example.
 
 
 
-## Statistical comparison (Wilcoxon) — pending
+## Statistical comparison
 
-A Wilcoxon signed-rank test compares two models fold-by-fold. It will be added
-here once a second architecture (e.g. DINOv2, CLIP, BiomedCLIP) completes its
-own 6-fold CV, to test whether the per-fold differences between models are
-statistically significant.
+Models are compared across architectures with Friedman and Nemenyi tests on the same six folds; see `docs/RESULTS_DETAILS.md` and `results/benchmark_figures/`.
 
 ## Method notes
 
-- **Data**: JUMP-CP Cell Painting, 5 fluorescence channels (DNA, ER, RNA, AGP,
-  Mito) per field of view, packed as a single wide 8-bit PNG and split back to
+- **Data**: JUMP-CP Cell Painting, 5 fluorescence channels (DNA, AGP, ER, Mito,
+  RNA) per field of view, packed as a single wide 8-bit PNG and split back to
   a `[1080, 1080, 5]` tensor at load time. First conv layer adapted 3→5 channels.
 - **Crop**: 448×448 (paper-faithful; `Resize` off), from 1080×1080 images.
 - **Loss**: masked binary cross-entropy over 29 assays.

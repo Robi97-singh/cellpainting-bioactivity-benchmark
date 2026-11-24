@@ -18,11 +18,11 @@ Run `python3 verify/verify_claims.py` from the repository root. It needs only Py
 * The per-fold scores themselves. The benchmark table is checked against the per-fold scores in the cv_summary.csv files, but those scores were computed from per-image prediction files that are too large to commit, so they are not re-derived from predictions here. They can be checked against the cluster logs.
 * Faithfulness numbers (deletion and insertion z-scores) are in agg_r65.csv; the script does not recompute them from the raw explanation maps, which are too large to commit.
 * Paired differences against the ResNet reference are computed inside make_panel.py (on the targets where the ResNet value exists) and are not recomputed by the script.
-* Training itself: it needs the Cell Painting images and a GPU cluster. The job specs in jobs/ and the parameter files in params/ document how each run was launched.
+* Training itself: it needs the Cell Painting images and a GPU cluster. The job specs in cluster/jobs/ and the parameter files in params/ document how each run was launched.
 
 ## Authorship and limits
 
-This verifier and the documentation around it were written with AI assistance (Claude, Anthropic) together with the project author. It checks internal consistency: that the numbers stated in the README and the documents agree with the result files committed here. It does not prove independently that the result files are correct; for that the training would have to be repeated (see above). The collaborator models (EfficientNet-B3 and ResNet-18, by Bhartendu Parihar) were re-scored from his checkpoints with cv_rescore.py; the checks done and the caveats are in results/efficientnet_b3/README.md and results/resnet18/README.md (ResNet-18 used early stopping and ResNet-50 did not; his EfficientNet-B3 448 px text file does not match his checkpoints).
+The verifier and the documentation were prepared by the project author with the help of an AI assistant (Claude, Anthropic); the author is responsible for their content. It checks internal consistency: that the numbers stated in the README and the documents agree with the result files committed here. It does not prove independently that the result files are correct; for that the training would have to be repeated (see above). The collaborator models (EfficientNet-B3 and ResNet-18, by Bhartendu Parihar) were re-scored from his checkpoints with cv_rescore.py; the checks done and the caveats are in results/efficientnet_b3/README.md and results/resnet18/README.md (ResNet-18 used early stopping and ResNet-50 did not; his EfficientNet-B3 448 px text file does not match his checkpoints).
 
 ## Notes for a reviewer
 
